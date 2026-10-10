@@ -1,0 +1,118 @@
+<title>扑通</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/*__STYLE__*/
+</style>
+
+<div class="app" id="app">
+  <aside class="stage-col">
+    <section class="stage tod-afternoon" id="stage" aria-label="扑通所在的窗台">
+      <div class="sky" id="sky">
+        <div class="stars" id="stars"></div>
+        <div class="sun"></div>
+        <div class="moon"></div>
+        <div class="cloud-track t1"><div class="cloud"></div></div>
+        <div class="cloud-track t2"><div class="cloud"></div></div>
+        <div class="cloud-track t3"><div class="cloud"></div></div>
+      </div>
+      <div class="mullion"></div>
+      <div class="sill"></div>
+      <div class="mood-glow"></div>
+      <span class="stage-time" id="stageTime" hidden></span>
+      <button class="alien-btn" id="alienBtn" type="button" aria-label="戳一戳扑通">
+        <svg id="alien" class="ears-rest" viewBox="0 0 200 200" aria-hidden="true"></svg>
+      </button>
+      <div class="poke-bubble" id="pokeBubble" hidden></div>
+    </section>
+
+    <div class="status">
+      <div class="name-row">
+        <h1 class="name">扑通</h1>
+        <span class="mood-chip" id="moodChip"><i></i><span>心情</span><b>平静</b></span>
+      </div>
+      <div class="bond">
+        <div class="bond-label"><span>心核 <strong id="lvName">Lv1 信号接通</strong></span><span class="pts" id="lvPts">0 / 20</span></div>
+        <div class="bar" role="progressbar" aria-label="羁绊进度" id="lvBarWrap" aria-valuemin="0" aria-valuemax="100"><i id="lvBar"></i></div>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist" aria-label="页面">
+      <button role="tab" id="tab-chat" data-tab="chat" aria-selected="true" aria-controls="panel-chat">聊天</button>
+      <button role="tab" id="tab-memory" data-tab="memory" aria-selected="false" aria-controls="panel-memory">记忆</button>
+      <button role="tab" id="tab-diary" data-tab="diary" aria-selected="false" aria-controls="panel-diary">日记</button>
+      <button role="tab" id="tab-growth" data-tab="growth" aria-selected="false" aria-controls="panel-growth">成长</button>
+      <button role="tab" id="tab-lab" data-tab="lab" aria-selected="false" aria-controls="panel-lab">实验室</button>
+    </nav>
+  </aside>
+
+  <main class="panel-col">
+    <!-- 聊天 -->
+    <section class="panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
+      <header class="chat-head">
+        <div class="who"><b>和扑通聊天</b><span id="connLine">正在连接模型…</span></div>
+        <div class="toggles">
+          <button class="toggle" id="innerToggle" type="button" aria-pressed="false" title="显示扑通每一轮的内心独白、策略和情绪">心声</button>
+          <button class="toggle" id="ttsToggle" type="button" aria-pressed="false" title="让扑通把话念出来">语音</button>
+        </div>
+      </header>
+      <div class="log" id="log" aria-live="polite"></div>
+      <div class="chips" id="chips"></div>
+      <form class="composer" id="composer" autocomplete="off">
+        <textarea id="input" rows="1" maxlength="500" placeholder="和扑通说点什么…" aria-label="消息"></textarea>
+        <button type="submit" class="btn primary send" id="sendBtn">发送</button>
+        <button type="button" class="btn dark send" id="stopBtn" hidden>停下</button>
+      </form>
+    </section>
+
+    <!-- 记忆 -->
+    <section class="panel" id="panel-memory" role="tabpanel" aria-labelledby="tab-memory" hidden>
+      <div class="scroll" id="memScroll">
+        <header class="ph">
+          <h2>记忆星空</h2>
+          <p>扑通记住的每一件事，都是它天上的一颗星：越重要越大，越新越亮。点一颗星看看它记住了什么。</p>
+        </header>
+        <div>
+          <div class="skybox" id="skybox">
+            <canvas id="memSky" aria-label="记忆星空，每颗星是一条记忆"></canvas>
+            <div class="star-tip" id="starTip" hidden></div>
+            <span class="sky-count" id="skyCount"></span>
+          </div>
+          <div class="legend" id="skyLegend"></div>
+        </div>
+        <div id="memLists"></div>
+      </div>
+    </section>
+
+    <!-- 日记 -->
+    <section class="panel" id="panel-diary" role="tabpanel" aria-labelledby="tab-diary" hidden>
+      <div class="scroll" id="diaryScroll"></div>
+    </section>
+
+    <!-- 成长 -->
+    <section class="panel" id="panel-growth" role="tabpanel" aria-labelledby="tab-growth" hidden>
+      <div class="scroll" id="growthScroll"></div>
+    </section>
+
+    <!-- 实验室 -->
+    <section class="panel" id="panel-lab" role="tabpanel" aria-labelledby="tab-lab" hidden>
+      <nav class="subtabs" role="tablist" aria-label="实验室">
+        <button role="tab" data-sub="evals" aria-selected="true">评测 Evals</button>
+        <button role="tab" data-sub="turns" aria-selected="false">逐轮检查</button>
+        <button role="tab" data-sub="metrics" aria-selected="false">体验指标</button>
+        <button role="tab" data-sub="soul" aria-selected="false">灵魂设定</button>
+        <button role="tab" data-sub="settings" aria-selected="false">设置</button>
+      </nav>
+      <div class="scroll" id="labScroll"></div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/*__CONTENT__*/
+</script>
+<script>
+/*__APP__*/
+</script>
