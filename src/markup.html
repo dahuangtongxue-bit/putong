@@ -21,7 +21,7 @@
       <div class="sill"></div>
       <div class="mood-glow"></div>
       <span class="stage-time" id="stageTime" hidden></span>
-      <button class="alien-btn" id="alienBtn" type="button" aria-label="戳一戳扑通">
+      <button class="alien-btn" id="alienBtn" type="button" aria-label="戳一戳扑通（长按听心跳）">
         <svg id="alien" class="ears-rest" viewBox="0 0 200 200" aria-hidden="true"></svg>
       </button>
       <div class="poke-bubble" id="pokeBubble" hidden></div>
@@ -60,6 +60,9 @@
       <div class="log" id="log" aria-live="polite"></div>
       <div class="chips" id="chips"></div>
       <form class="composer" id="composer" autocomplete="off">
+        <button type="button" class="btn dark mic" id="micBtn" aria-label="按住说话" aria-pressed="false" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1.5" width="4" height="8" rx="2" fill="currentColor"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5M5.5 14.5h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
         <textarea id="input" rows="1" maxlength="500" placeholder="和扑通说点什么…" aria-label="消息"></textarea>
         <button type="submit" class="btn primary send" id="sendBtn">发送</button>
         <button type="button" class="btn dark send" id="stopBtn" hidden>停下</button>
@@ -107,6 +110,17 @@
       <div class="scroll" id="labScroll"></div>
     </section>
   </main>
+</div>
+<div class="knock" id="knock" hidden role="dialog" aria-modal="true" aria-label="敲门">
+  <div class="knock-card">
+    <div class="knock-title">咚、咚。</div>
+    <p class="knock-text">这个窗台上了一道小锁。<br>把部署方给你的访问码告诉我，我就能进来了。</p>
+    <div class="knock-row">
+      <input id="knockCode" type="password" placeholder="访问码" aria-label="访问码">
+      <button class="btn primary" id="knockGo" type="button">轻轻敲一下</button>
+    </div>
+    <p class="knock-err" id="knockErr" hidden></p>
+  </div>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
 

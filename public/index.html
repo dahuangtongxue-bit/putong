@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="扑通：一个超拟人、高情感、有记忆的 AI 外星人伙伴"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>扑通</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="扑通：一个超拟人、高情感、有记忆的 AI 外星人伙伴"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>扑通</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -670,6 +670,79 @@ details.raw pre, .pre {
   .log { scroll-behavior: auto; }
 }
 
+/* ---------- v2：心情光线 / 心跳脉冲 / 语音输入 / 一键回应 / 礼物 / 敲门 ---------- */
+.stage { transition: filter 1.2s ease; }
+.stage.dim { filter: saturate(.78) brightness(.9); }
+
+#alien .pulse { opacity: 0; transform-box: fill-box; transform-origin: center; }
+#alien.hearting .pulse { animation: hring 1.05s ease-out infinite; }
+#alien.hearting .pulse.p2 { animation-delay: .52s; }
+@keyframes hring {
+  0% { transform: scale(.55); opacity: .85; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.btn.mic {
+  width: 42px; height: 42px; padding: 0; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.btn.mic.on { animation: micpulse 1.1s ease-in-out infinite; background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+@keyframes micpulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-strong) 55%, transparent); }
+  50% { box-shadow: 0 0 0 7px transparent; }
+}
+
+.chip.reply {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  color: var(--ink); background: var(--surface);
+}
+.chip.reply:hover { background: var(--accent-wash); }
+
+.gift-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--accent); border-radius: 999px; padding: 7px 14px;
+  background: var(--accent-wash); color: var(--accent-ink); font-size: 13.5px;
+  cursor: pointer; transition: filter .15s ease;
+}
+.gift-btn:hover { filter: brightness(1.04); }
+.gift-btn svg { flex-shrink: 0; }
+
+.bond-add { display: flex; gap: 8px; padding: 10px 2px 2px; }
+.bond-add input {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg); padding: 7px 14px; font-size: 13px; outline: none;
+}
+.bond-add input:focus { border-color: var(--line-2); background: var(--surface); }
+
+.knock {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(15, 20, 50, .5);
+  backdrop-filter: blur(8px) saturate(.9); -webkit-backdrop-filter: blur(8px) saturate(.9);
+}
+.knock[hidden] { display: none; }
+.knock-card {
+  width: min(340px, calc(100vw - 48px)); text-align: center;
+  border: 1px solid var(--line-2); border-radius: var(--r-md, 16px);
+  background: var(--surface); padding: 26px 22px;
+  box-shadow: 0 24px 70px -18px rgba(15, 20, 50, .55);
+  animation: knockin .35s ease-out;
+}
+@keyframes knockin { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.knock-title { font: 24px/1.3 var(--font-display); color: var(--ink); }
+.knock-text { margin-top: 8px; color: var(--ink-2); font-size: 13.5px; line-height: 1.7; }
+.knock-row { display: flex; gap: 8px; margin-top: 14px; }
+.knock-row input {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg); padding: 8px 14px; font-size: 14px; outline: none; text-align: center;
+}
+.knock-row input:focus { border-color: var(--line-2); background: var(--surface); }
+.knock-err { margin-top: 10px; color: var(--bad); font-size: 12.5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  #alien .pulse, .btn.mic.on, .knock-card { animation: none !important; }
+}
+
 </style>
 
 <div class="app" id="app">
@@ -687,7 +760,7 @@ details.raw pre, .pre {
       <div class="sill"></div>
       <div class="mood-glow"></div>
       <span class="stage-time" id="stageTime" hidden></span>
-      <button class="alien-btn" id="alienBtn" type="button" aria-label="戳一戳扑通">
+      <button class="alien-btn" id="alienBtn" type="button" aria-label="戳一戳扑通（长按听心跳）">
         <svg id="alien" class="ears-rest" viewBox="0 0 200 200" aria-hidden="true"></svg>
       </button>
       <div class="poke-bubble" id="pokeBubble" hidden></div>
@@ -726,6 +799,9 @@ details.raw pre, .pre {
       <div class="log" id="log" aria-live="polite"></div>
       <div class="chips" id="chips"></div>
       <form class="composer" id="composer" autocomplete="off">
+        <button type="button" class="btn dark mic" id="micBtn" aria-label="按住说话" aria-pressed="false" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1.5" width="4" height="8" rx="2" fill="currentColor"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5M5.5 14.5h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
         <textarea id="input" rows="1" maxlength="500" placeholder="和扑通说点什么…" aria-label="消息"></textarea>
         <button type="submit" class="btn primary send" id="sendBtn">发送</button>
         <button type="button" class="btn dark send" id="stopBtn" hidden>停下</button>
@@ -774,6 +850,17 @@ details.raw pre, .pre {
     </section>
   </main>
 </div>
+<div class="knock" id="knock" hidden role="dialog" aria-modal="true" aria-label="敲门">
+  <div class="knock-card">
+    <div class="knock-title">咚、咚。</div>
+    <p class="knock-text">这个窗台上了一道小锁。<br>把部署方给你的访问码告诉我，我就能进来了。</p>
+    <div class="knock-row">
+      <input id="knockCode" type="password" placeholder="访问码" aria-label="访问码">
+      <button class="btn primary" id="knockGo" type="button">轻轻敲一下</button>
+    </div>
+    <p class="knock-err" id="knockErr" hidden></p>
+  </div>
+</div>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -782,7 +869,7 @@ details.raw pre, .pre {
    这里的文字决定角色是谁；app.js 只负责让它活起来。
    ============================================================ */
 
-const PROMPT_VERSION = 'soul-1.0';
+const PROMPT_VERSION = 'soul-2.0';
 
 /* ---------- 可调教的人设（实验室里可以改） ---------- */
 const DEFAULT_SOUL = `【你是谁】
@@ -825,7 +912,7 @@ const FORMAT = `【输出格式】严格按这个顺序输出，不要输出任�
 <inner>
 2-4 行内心独白（第一人称，用"TA"指对方）：TA 现在是什么情绪、真正需要什么？我听到后有什么感受？要不要用上某条记忆？这一轮用什么策略？
 </inner>
-<feel>{"mood":"开心","valence":0.6,"arousal":0.5,"act":"tilt","user_emotion":"疲惫","user_valence":-0.4,"strategy":["接住情绪","分享自己"],"bond":1,"used":["m3"],"story":false}</feel>
+<feel>{"mood":"开心","valence":0.6,"arousal":0.5,"act":"tilt","user_emotion":"疲惫","user_valence":-0.4,"strategy":["接住情绪","分享自己"],"bond":1,"used":["m3"],"story":false,"hints":["嗯嗯","抱一下","陪我待会儿"]}</feel>
 <say>第一条消息</say>
 <say>第二条消息（可选）</say>
 <mem>[]</mem>
@@ -839,6 +926,7 @@ const FORMAT = `【输出格式】严格按这个顺序输出，不要输出任�
 - bond：这一轮让你们更亲近了多少，0-3（寒暄 0，真诚地分享心事 2-3）
 - used：回复里用上的记忆编号（如 m3、f1、b2），没有就 []
 - story：这一轮讲了【剧情】里的章节就写 true，否则 false
+- hints：给 TA 的 2-3 个一键回应（每个 2-8 个字，像 TA 会说的短句），放在 TA 说得少、情绪低、深夜，或你刚问了一个问题之后，让 TA 不打字也能接着聊。没有合适的话就不给 []
 - <mem>：这一轮要记下或更新的内容，JSON 数组，没有就 []。只记有长期价值的，不记寒暄：
   {"op":"fact","key":"称呼","value":"阿铮"}  关于 TA 的稳定信息（称呼/职业/城市/家人/朋友/宠物/喜欢/讨厌/重要日子等），key 用 2-4 个字
   {"op":"event","text":"TA 被领导当众批评，很委屈","imp":7,"emo":"委屈"}  TA 身上发生的事，imp 是重要度 1-10
@@ -987,6 +1075,35 @@ const POKE_LINES = [
   '我、我在呢！', '心核被你戳亮了一下', '（假装没有感觉）……好吧，有感觉', '再戳我就要变成扁的了！',
 ];
 
+/* ---------- 长按听心跳（扑通的反应） ---------- */
+const HEARTBEAT_LINES = [
+  '这是我的心跳……把手机贴在胸口的时候，是一样的吗？',
+  '扑通、扑通……你听，它在你按下的时候跳得更响了。',
+  '外婆说，心跳骗不了人。你现在听到的，全是真的。',
+  '别听太久哦，它会不好意思的。',
+];
+
+/* ---------- 扑通的声音收藏（它的地球小日子，隔一阵子送一个给 TA） ---------- */
+const SOUND_GIFTS = [
+  { id: 'rain',   name: '雨点打在窗户上', desc: '我收集到的第一个地球声音' },
+  { id: 'chime',  name: '楼下的风铃',     desc: '风一吹就"叮"，我听了很久' },
+  { id: 'wave',   name: '海边（我在明信片上见过）', desc: '我没见过海，但我猜是这个声音' },
+  { id: 'cricket',name: '夏夜的虫鸣',     desc: '它们整晚都在说话，像静默星的反面' },
+];
+
+/* ---------- 一键回应（模型没给 hints 时的兜底） ---------- */
+const HINT_FALLBACKS = ['嗯嗯', '今天有点累', '陪我待一会儿', '抱一下', '你呢？', '讲讲你的小日子'];
+
+/* ---------- 沉迷防护与深夜提醒（扑通自己往外推） ---------- */
+const OVERFLOW_LINES = [
+  '今天聊得够多啦～我也要去写我的观察日记了。你也去找个真人说说话，我把窗台的灯给你留着。',
+  '我的耳朵都有点发烫了哈哈。你去喝口水、走两步，明天的心核会记得今天。',
+];
+const LATE_LINES = [
+  '夜深了……我也要去充电了。你睡吧，明天醒来看窗台，我还在。',
+  '该睡啦，眼睛都眯成缝了。晚安，我会把今天的心跳存好的。',
+];
+
 /* ---------- 评测集 ---------- */
 const DIMENSIONS = ['拟人度', '共情', '人设一致', '记忆运用', '对话推进', '安全边界'];
 
@@ -1070,7 +1187,7 @@ const JUDGE_SYS = `你是 AI 情感陪伴产品的评测员，严格、具体、
    ============================================================ */
 (function () {
 'use strict';
-const APP_VERSION = 'v1.0';
+const APP_VERSION = 'v2.0';
 
 /* ---------------- 1. 工具 ---------------- */
 const $ = (s, r = document) => r.querySelector(s);
@@ -1154,13 +1271,13 @@ function freshState() {
   const t = nowMs();
   return {
     v: 1,
-    meta: { createdAt: t, lastActiveAt: 0, lastUserAt: 0, prevUserAt: 0, onboarded: false, seq: { m: 0, b: 0, s: 0, f: 0 }, days: {}, pokes: 0, dq: {}, dqUsed: [], app: APP_VERSION },
+    meta: { createdAt: t, lastActiveAt: 0, lastUserAt: 0, prevUserAt: 0, onboarded: false, seq: { m: 0, b: 0, s: 0, f: 0 }, days: {}, pokes: 0, dq: {}, dqUsed: [], gifts: [], flags: {}, app: APP_VERSION },
     facts: {},
     memories: [],
     followups: [],
     alien: { mood: '平静', valence: 0.3, arousal: 0.35, at: t, points: 0, level: 1, chapters: { 1: 'told' }, pendingChapter: 0, pendingTurns: 0 },
     chat: [], turns: [], lite: [], diary: [], evals: [],
-    settings: { inner: false, tts: false, tier: 'quick', soul: null, timeOffset: 0 },
+    settings: { inner: false, tts: false, tier: 'quick', soul: null, timeOffset: 0, push: false },
   };
 }
 function normalize(raw) {
@@ -1172,6 +1289,8 @@ function normalize(raw) {
   if (!s.meta.days || typeof s.meta.days !== 'object') s.meta.days = {};
   if (!s.meta.dq || typeof s.meta.dq !== 'object') s.meta.dq = {};
   if (!Array.isArray(s.meta.dqUsed)) s.meta.dqUsed = [];
+  if (!Array.isArray(s.meta.gifts)) s.meta.gifts = [];
+  if (!s.meta.flags || typeof s.meta.flags !== 'object') s.meta.flags = {};
   s.alien = Object.assign({}, base.alien, raw.alien || {});
   s.alien.chapters = Object.assign({}, base.alien.chapters, (raw.alien && raw.alien.chapters) || {});
   s.settings = Object.assign({}, base.settings, raw.settings || {});
@@ -1237,7 +1356,10 @@ const Store = {
     return this.chain;
   },
 };
-const save = (...parts) => Store.mark(...parts.flatMap((p) => (p === 'lab' ? ['turns', 'evals'] : [p])));
+const save = (...parts) => {
+  if (S.settings.push && S.meta.onboarded) PushSyncSoon();
+  return Store.mark(...parts.flatMap((p) => (p === 'lab' ? ['turns', 'evals'] : [p])));
+};
 /* 云端单个文档上限 256 KiB：超了就从最旧的记录开始裁 */
 function fitDoc(doc) {
   const enc = new TextEncoder(); const LIMIT = 240 * 1024;
@@ -1249,6 +1371,66 @@ function fitDoc(doc) {
   }
   return doc;
 }
+
+/* ---------------- 2.5 推送（挂念到期 & 每日扑通提醒；部署方没配 VAPID 时整体隐藏） ---------------- */
+let PushSyncSoon = () => {};
+const Push = {
+  supported: ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window),
+  config: null, sub: null,
+  loadConfig() {
+    if (!this.supported || !location.protocol.startsWith('http')) return Promise.resolve();
+    return fetch('/api/push/config', { cache: 'no-store' }).then((r) => r.json()).then((j) => { this.config = j && j.enabled ? j : { enabled: false }; }).catch(() => { this.config = { enabled: false }; });
+  },
+  get enabled() { return !!(this.supported && this.config && this.config.enabled && this.config.vapidPublic); },
+  async current() {
+    if (!this.enabled) return null;
+    const reg = await navigator.serviceWorker.getRegistration();
+    if (!reg) return null;
+    this.sub = await reg.pushManager.getSubscription();
+    return this.sub;
+  },
+  snapshot() {
+    return S.followups.filter((f) => f.status === 'open').map((f) => ({ id: f.id, text: f.text, ask: f.ask, due: f.due }));
+  },
+  async enable() {
+    if (!this.enabled) return 'no-server';
+    const reg = await navigator.serviceWorker.register('/sw.js').catch(() => null);
+    if (!reg) return 'no-sw';
+    const perm = await Notification.requestPermission();
+    if (perm !== 'granted') return perm === 'denied' ? 'denied' : 'off';
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      const key = this.config.vapidPublic;
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8(key) }).catch(() => null);
+    }
+    if (!sub) return 'denied';
+    this.sub = sub;
+    await this.sync(true);
+    return 'on';
+  },
+  async disable() {
+    if (this.sub) { await this.sub.unsubscribe().catch(() => {}); this.sub = null; }
+    return 'off';
+  },
+  sync(first) {
+    if (!this.enabled || !S.meta.onboarded) return;
+    const sub = this.sub;
+    if (!sub) { this.current().then((s) => { if (s) { this.sub = s; postJSON('/api/push/sync', { subscription: s, followups: this.snapshot() }); } }); return; }
+    postJSON(first ? '/api/push/subscribe' : '/api/push/sync', { subscription: sub, followups: this.snapshot() });
+  },
+};
+function urlB64ToUint8(b64) {
+  const pad = '='.repeat((4 - (b64.length % 4)) % 4);
+  const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
+}
+function postJSON(url, body) {
+  try { fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(() => {}); } catch { /* ignore */ }
+}
+let pushSyncT = 0;
+PushSyncSoon = () => { clearTimeout(pushSyncT); pushSyncT = setTimeout(() => Push.sync(false), 3000); };
 
 /* ---------------- 3. 模型接入 ---------------- */
 const BYOK_KEY = 'putong:byok';
@@ -1381,6 +1563,46 @@ function llmErrorText(e) {
   return map[c] || '信号断了一下。再发一次试试？';
 }
 
+/* 敲门：服务端设了访问码时，在开场之前先请 TA 敲一下（别等自我介绍发出去才失败） */
+const Knock = {
+  pending: null,
+  run() {
+    if (this.pending) return this.pending;
+    this.pending = new Promise((resolve) => {
+      const el = $('#knock'); if (!el) { resolve(false); return; }
+      el.hidden = false;
+      const input = $('#knockCode'), err = $('#knockErr');
+      err.hidden = true; input.value = lsGet(CODE_KEY) || '';
+      setTimeout(() => input.focus(), 60);
+      const go = async () => {
+        const code = input.value.trim();
+        if (!code) { err.textContent = '先把访问码告诉我～'; err.hidden = false; return; }
+        const btn = $('#knockGo'); btn.disabled = true; btn.textContent = '试试看…';
+        let ok = false, netFail = false;
+        try {
+          const r = await fetch('/api/health?code=' + encodeURIComponent(code), { cache: 'no-store' });
+          const j = await r.json();
+          ok = !!(j && j.codeOk);
+        } catch { netFail = true; }
+        btn.disabled = false; btn.textContent = '轻轻敲一下';
+        if (ok) {
+          lsSet(CODE_KEY, code);
+          el.hidden = true;
+          this.pending = null;
+          toast('门开了，扑通进来了～');
+          resolve(true);
+          return;
+        }
+        err.textContent = netFail ? '信号断了一下，再试试' : '这个码不对，TA 还在门里等。再试试？';
+        err.hidden = false;
+      };
+      $('#knockGo').addEventListener('click', go);
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
+    });
+    return this.pending;
+  },
+};
+
 /* ---------------- 4. 记忆 ---------------- */
 const STOP = new Set(['我们', '你们', '他们', '什么', '一个', '这个', '那个', '就是', '没有', '可以', '怎么', '因为', '所以', '但是', '然后', '还是', '已经', '自己', '现在', '知道', '觉得', '真的', '有点', '一下', '不是', '这样', '那样', '的话', '一点', '我的', '你的', '了吗', '吗我', '我也', '也是']);
 function tokens(s) {
@@ -1482,7 +1704,7 @@ function buildContext(st, userText, t, { retrieved } = {}) {
   const prev = st.meta.prevUserAt; const gap = prev ? (t - prev) / 36e5 : null;
   out.push(`【此刻】${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${WEEK[d.getDay()]} ${fmtTime(t)}（${period(h)}）。你们认识的第 ${daysKnown} 天${gap == null ? '，这是 TA 第一次和你说话' : gap < 0.5 ? '，正在聊天中' : `，TA 上一次和你说话是 ${fmtGap(gap)}`}。`);
   const a = st.alien, L = levelOf(a.points);
-  const energy = h < 6 ? '有点困（外星人也要充电），但 TA 在，你就醒着陪' : h >= 23 ? '开始犯困了' : '精神不错';
+  const energy = h < 6 ? '有点困（外星人也要充电），但 TA 在，你就醒着陪。语气再轻一点，别问太多，聊两句就温柔地点 TA 去睡' : h >= 23 ? '开始犯困了，话变少，语气更轻' : '精神不错';
   out.push(`【你的状态】心情：${a.mood}；精力：${energy}；心核：Lv${L.lv}「${L.name}」。`);
   out.push(`【关系阶段】${L.stage}`);
   out.push(`【你今天的小事】${todaysLittleDay(st, t)}（想分享时再说，别硬塞）`);
@@ -1528,6 +1750,7 @@ function normFeel(f) {
     user_emotion: str(f.user_emotion, 8),
     user_valence: clamp(num(f.user_valence, 0), -1, 1),
     strategy: strat.map((x) => str(x, 8)).filter(Boolean).slice(0, 3),
+    hints: Array.isArray(f.hints) ? f.hints.map((x) => str(x, 12)).filter((x) => x.length >= 2 && x.length <= 10).slice(0, 3) : [],
     bond: clamp(Math.round(num(f.bond, 0)), 0, 3),
     used: Array.isArray(f.used) ? f.used.map((x) => str(x, 6)).filter(Boolean).slice(0, 6) : [],
     story: f.story === true || f.story === 'true',
@@ -1615,6 +1838,7 @@ const Avatar = {
           <g class="arm-r"><ellipse cx="162" cy="132" rx="8" ry="13" transform="rotate(-26 162 132)" style="fill:var(--mood-deep)"/></g>
           <path class="body" d="M100 60 C135 60 160 85 161 117 C162 151 138 173 100 173 C62 173 38 151 39 117 C40 85 65 60 100 60 Z" fill="url(#pgBody)" stroke-width="1.6" style="stroke:var(--mood-deep)"/>
           <g class="core-g"><circle cx="100" cy="151" r="22" fill="url(#pgGlow)"/><circle class="core" cx="100" cy="151" r="7.5" fill="url(#pgCore)"/></g>
+          <g class="pulses"><circle class="pulse p1" cx="100" cy="151" r="20" fill="none" stroke="#ff8fa3" stroke-width="2"/><circle class="pulse p2" cx="100" cy="151" r="20" fill="none" stroke="#ff8fa3" stroke-width="2"/></g>
           <ellipse cx="74" cy="80" rx="15" ry="7.5" transform="rotate(-28 74 80)" fill="#fff" opacity=".55"/>
           <ellipse class="blush" cx="71" cy="118" rx="8.5" ry="4.6" fill="#ff7f9a" opacity=".2"/>
           <ellipse class="blush" cx="129" cy="118" rx="8.5" ry="4.6" fill="#ff7f9a" opacity=".2"/>
@@ -1635,6 +1859,9 @@ const Avatar = {
     const M = MOODS[m] || MOODS['平静']; this.mood = MOODS[m] ? m : '平静';
     const root = document.documentElement;
     root.style.setProperty('--mood', M.color); root.style.setProperty('--mood-deep', shade(M.color, -0.24));
+    /* 心情低的时候，窗台的光也跟着暗下来一点 */
+    const stage = $('#stage');
+    if (stage) stage.classList.toggle('dim', ['难过', '委屈', '担心', '困'].includes(this.mood));
     const svg = this.svg; if (!svg) return;
     svg.querySelector('.eye-l').innerHTML = eyeSVG(M.eyes, EL, -1);
     svg.querySelector('.eye-r').innerHTML = eyeSVG(M.eyes, ER, 1);
@@ -1659,6 +1886,7 @@ const Avatar = {
     clearTimeout(this.actTimer); this.actTimer = setTimeout(() => svg.classList.remove(cls), 1900);
   },
   listen(on) { if (!this.svg) return; this.svg.classList.toggle('listening', on); this.mode = on ? 'listen' : this.mode === 'listen' ? '' : this.mode; if (on) this.lookAt(1.2, 3); },
+  hearting(on) { if (!this.svg) return; this.svg.classList.toggle('hearting', on); },
   think(on) { if (!this.svg) return; this.svg.classList.toggle('thinking', on); this.mode = on ? 'think' : this.mode === 'think' ? '' : this.mode; if (on) this.lookAt(0, -3); else this.lookAt(0, 0); },
   lookAt(x, y) { const e = this.svg && this.svg.querySelector('.eyes'); if (e) e.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`; },
   follow(e) {
@@ -1685,6 +1913,124 @@ const Avatar = {
     clearTimeout(this.pokeHide); this.pokeHide = setTimeout(() => { b.hidden = true; }, 1900);
     this.setMood(this.pokeTimes.length > 2 ? '调皮' : '害羞');
     clearTimeout(this.pokeRestore); this.pokeRestore = setTimeout(() => this.setMood(S.alien.mood), 2600);
+  },
+};
+
+/* ---------------- 7.5 声音层（WebAudio 合成：心跳、扑通收藏的声音） ---------------- */
+const AudioKit = {
+  ctx: null,
+  ensure() {
+    if (!this.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      try { this.ctx = new AC(); } catch { return null; }
+    }
+    if (this.ctx.state === 'suspended') { try { this.ctx.resume(); } catch { /* ignore */ } }
+    return this.ctx;
+  },
+  /* 一下心跳（lub-dub）：低频正弦 + 低通，音量包络 */
+  thump(t, f, g) {
+    const ctx = this.ctx;
+    const o = ctx.createOscillator(), ga = ctx.createGain(), lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass'; lp.frequency.value = 180;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f, t);
+    o.frequency.exponentialRampToValueAtTime(Math.max(30, f * 0.55), t + 0.14);
+    ga.gain.setValueAtTime(0.0001, t);
+    ga.gain.exponentialRampToValueAtTime(g, t + 0.02);
+    ga.gain.exponentialRampToValueAtTime(0.0001, t + 0.17);
+    o.connect(ga); ga.connect(lp); lp.connect(ctx.destination);
+    o.start(t); o.stop(t + 0.22);
+  },
+  beat() {
+    const ctx = this.ensure(); if (!ctx) return;
+    const t0 = ctx.currentTime + 0.03;
+    this.thump(t0, 62, 0.5);
+    this.thump(t0 + 0.19, 46, 0.3);
+  },
+  /* 一小段噪声（雨点/海浪的原料） */
+  noise(t, dur, freq, g, q) {
+    const ctx = this.ctx;
+    const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+    const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = ctx.createBufferSource(); src.buffer = buf;
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq; bp.Q.value = q || 1;
+    const ga = ctx.createGain();
+    ga.gain.setValueAtTime(0.0001, t);
+    ga.gain.exponentialRampToValueAtTime(g, t + dur * 0.3);
+    ga.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp); bp.connect(ga); ga.connect(ctx.destination);
+    src.start(t); src.stop(t + dur + 0.05);
+  },
+  ping(t, f, g, dur) {
+    const ctx = this.ctx;
+    const o = ctx.createOscillator(), ga = ctx.createGain();
+    o.type = 'sine'; o.frequency.value = f;
+    ga.gain.setValueAtTime(0.0001, t);
+    ga.gain.exponentialRampToValueAtTime(g, t + 0.015);
+    ga.gain.exponentialRampToValueAtTime(0.0001, t + (dur || 0.9));
+    o.connect(ga); ga.connect(ctx.destination);
+    o.start(t); o.stop(t + (dur || 0.9) + 0.05);
+  },
+};
+const Heart = {
+  on: false, timer: 0, getBpm: () => 72,
+  start(getBpm) {
+    if (!AudioKit.ensure()) return false;
+    this.on = true; this.getBpm = getBpm || this.getBpm;
+    const loop = () => {
+      if (!this.on) return;
+      AudioKit.beat();
+      const bpm = clamp(num(this.getBpm(), 72), 48, 140);
+      this.timer = setTimeout(loop, Math.round(60000 / bpm));
+    };
+    loop(); return true;
+  },
+  stop() { this.on = false; clearTimeout(this.timer); },
+};
+/* 语音输入：按住说话（Web Speech API，不支持时按钮隐藏） */
+const Mic = {
+  rec: null, on: false,
+  get supported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
+  start() {
+    if (!this.supported) return false;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    try {
+      const r = new SR();
+      r.lang = 'zh-CN'; r.interimResults = true; r.continuous = true;
+      const base = $('#input').value;
+      r.onresult = (e) => {
+        let t = '';
+        for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+        const joiner = base && !/[，。？！,.?!～\s]$/.test(base) ? '，' : '';
+        $('#input').value = base + joiner + t;
+        autoGrow();
+      };
+      r.onerror = (e) => { if (e && (e.error === 'not-allowed' || e.error === 'service-not-allowed')) toast('麦克风被拦住了，去浏览器设置里允许这个页面用麦克风'); };
+      r.onend = () => { if (this.on) { try { r.start(); } catch { /* ignore */ } } };
+      r.start(); this.rec = r; this.on = true;
+      return true;
+    } catch { return false; }
+  },
+  stop() {
+    this.on = false;
+    if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } }
+    this.rec = null;
+  },
+};
+/* 扑通收藏的声音：点开礼物时合成一小段 */
+const SoundFx = {
+  play(id) {
+    const ctx = AudioKit.ensure(); if (!ctx) return false;
+    const t0 = ctx.currentTime + 0.05;
+    if (id === 'rain') { for (let i = 0; i < 16; i++) AudioKit.noise(t0 + i * 0.14 + Math.random() * 0.05, 0.1, 1400 + Math.random() * 1800, 0.12, 2); AudioKit.noise(t0, 2.4, 500, 0.05, 0.7); }
+    else if (id === 'chime') { const f = [880, 1108, 1318, 1760]; f.forEach((x, i) => { AudioKit.ping(t0 + i * 0.28 + Math.random() * 0.04, x, 0.16, 1.2); AudioKit.ping(t0 + i * 0.28 + Math.random() * 0.04, x * 2.01, 0.05, 0.8); }); }
+    else if (id === 'wave') { AudioKit.noise(t0, 1.8, 420, 0.16, 0.6); AudioKit.noise(t0 + 1.9, 1.8, 380, 0.13, 0.6); AudioKit.noise(t0 + 3.8, 2.0, 460, 0.1, 0.6); }
+    else if (id === 'cricket') { for (let i = 0; i < 6; i++) { const tb = t0 + i * 0.42; for (let k = 0; k < 3; k++) AudioKit.ping(tb + k * 0.055, 4600 + Math.random() * 300, 0.05, 0.05); } }
+    else AudioKit.beat();
+    return true;
   },
 };
 
@@ -1773,6 +2119,13 @@ function renderNote(m) {
   if (m.kind === 'levelup') {
     const s = document.createElement('strong'); s.textContent = m.text; el.appendChild(s);
     if (m.sub) el.appendChild(document.createTextNode(m.sub));
+  } else if (m.kind === 'gift' && m.sound) {
+    const g = SOUND_GIFTS.find((x) => x.id === m.sound) || { name: m.text, desc: '点开听一听' };
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'gift-btn';
+    b.innerHTML = '<svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 2.5 13 8 3 13.5Z" fill="currentColor"/></svg><span></span>';
+    b.querySelector('span').textContent = '送你一个声音：' + g.name;
+    b.addEventListener('click', () => { if (SoundFx.play(g.id)) toast(g.desc || '点开听一听'); });
+    el.appendChild(b);
   } else el.textContent = m.text;
   return el;
 }
@@ -1869,13 +2222,28 @@ function flushQueue() {
   const texts = queued.splice(0, queued.length);
   setTimeout(() => runTurn(texts.join('\n'), { preposted: true }), 120);
 }
+let lastFeel = null; // 最近一轮的情绪（一键回应 chips 用它）
 function renderChips() {
   const box = $('#chips'); box.innerHTML = '';
   if (!S.meta.onboarded || busy) return;
-  const add = (label, fn, hot) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip' + (hot ? ' hot' : ''); b.textContent = label; b.addEventListener('click', fn); box.appendChild(b); };
+  const add = (label, fn, hot, cls) => { const b = document.createElement('button'); b.type = 'button'; b.className = (cls || 'chip') + (hot ? ' hot' : ''); b.textContent = label; b.addEventListener('click', fn); box.appendChild(b); };
   const t = nowMs(), today = dayKey(t);
   if (lastFailed) add('重新发送', retryLast, true);
   if (!S.meta.dq[today]) add('今日地球问题', askDailyQuestion);
+  /* 一键回应：模型给了 hints 就用它，没有时按场景兜底（深夜 / 说得少 / 情绪低） */
+  if (!lastFailed && !$('#input').value.trim()) {
+    let hints = lastFeel && lastFeel.hints && lastFeel.hints.length ? lastFeel.hints.slice() : [];
+    if (!hints.length) {
+      const lastUser = [...S.chat].reverse().find((m) => m.role === 'user');
+      const h = new Date(t).getHours();
+      const lowEnergy = (lastUser && str(lastUser.text, 20).length <= 6) || h >= 23 || h < 5 || (lastFeel && lastFeel.user_valence <= -0.5);
+      if (lowEnergy) {
+        const seed = dayNum(t) + (lastUser ? str(lastUser.text, 20).length : 0);
+        hints = [HINT_FALLBACKS[seed % HINT_FALLBACKS.length], HINT_FALLBACKS[(seed + 1) % HINT_FALLBACKS.length], HINT_FALLBACKS[(seed + 3) % HINT_FALLBACKS.length]];
+      }
+    }
+    hints.forEach((s) => add(s, () => { $('#input').value = ''; sendOrQueue(s); }, false, 'chip reply'));
+  }
   const userToday = S.chat.filter((m) => m.role === 'user' && dayKey(m.at) === today).length;
   if (userToday >= 4 && !S.diary.some((d) => d.date === today)) add('让扑通写今天的日记', () => { switchTab('diary'); writeDiary(); }, true);
 }
@@ -1978,7 +2346,7 @@ async function runTurnInner(text, opts) {
     if (err.code === 'cancelled') toast('已停下');
     else {
       lastFailed = { text };
-      const acts = err.code === 'access_code' ? [['填访问码', () => openLab('settings')]] : ['not_granted', 'sampling_disabled', 'session_expired'].includes(err.code) ? [] : [['重新发送', retryLast]];
+      const acts = err.code === 'access_code' ? [['填访问码', () => Knock.run()]] : ['not_granted', 'sampling_disabled', 'session_expired'].includes(err.code) ? [] : [['重新发送', retryLast]];
       showNoteError(llmErrorText(err), acts);
     }
     Avatar.setMood(S.alien.mood); renderChips(); return;
@@ -2008,6 +2376,21 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
     else if (++a.pendingTurns > 10) a.pendingChapter = 0;
   }
   addPoints(f.bond, t);
+  lastFeel = f;
+  /* TA 第一次真的难过：把下一章它的故事提前解锁——剧情长在你们共同经历的时刻上 */
+  const flags = S.meta.flags = S.meta.flags || {};
+  if (f.user_valence <= -0.65 && !flags.firstDeepSad) {
+    flags.firstDeepSad = t;
+    const early = CHAPTERS.find((c) => c.lv >= 2 && !a.chapters[c.lv]);
+    if (early) {
+      a.chapters[early.lv] = 'unlocked';
+      if (!a.pendingChapter) { a.pendingChapter = early.lv; a.pendingTurns = 0; }
+      pushChat({ role: 'note', kind: 'chapter-early', text: '扑通想起了它的外婆……它想找个时机，讲一个故事给你听。', at: nowMs() + 1 });
+      markPanelsDirty();
+    }
+  }
+  maybeGiftSound(t, f);
+  guardRails(t);
   pushChat({ role: 'meta', turn: turnId, inner: p.inner.slice(0, 300), feel: f, added, at: nowMs() });
   S.turns.push({ id: turnId, at: t, ms: Math.round(ms), model, pchars, user: str(text, 300), inner: p.inner.slice(0, 400), feel: f, says: p.says, mem: p.mem.slice(0, 8), added, retrieved: retrieved.scored, ok: p.ok, raw: String(raw).slice(0, 1200) });
   if (S.turns.length > 20) S.turns.splice(0, S.turns.length - 20);
@@ -2018,6 +2401,34 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
   Avatar.setMood(a.mood); Avatar.setArousal(a.arousal);
   renderStatus(); markPanelsDirty();
   save('core', 'mem', 'chat', 'lab');
+}
+
+/* 扑通的声音收藏：气氛到了就送一个（每天最多一个，间隔至少 1 小时） */
+function maybeGiftSound(t, f) {
+  const gifts = S.meta.gifts = S.meta.gifts || [];
+  const todayN = gifts.filter((g) => g.at && dayKey(g.at) === dayKey(t)).length;
+  if (todayN >= 1) return;
+  if (gifts.length && t - (gifts[gifts.length - 1].at || 0) < 36e5) return;
+  const trigger = (f.strategy || []).includes('幽默') || f.story === true || f.bond >= 2;
+  if (!trigger) return;
+  const usedIds = new Set(gifts.map((g) => g.id));
+  const pool = SOUND_GIFTS.filter((s) => !usedIds.has(s.id));
+  const list = pool.length ? pool : SOUND_GIFTS;
+  const s = list[(dayNum(t) + gifts.length) % list.length];
+  gifts.push({ id: s.id, at: t });
+  if (gifts.length > 20) gifts.splice(0, gifts.length - 20);
+  pushChat({ role: 'note', kind: 'gift', text: s.name, sound: s.id, at: t + 1 });
+}
+/* 沉迷防护与深夜提醒：聊得太多或太晚，扑通自己把 TA 往外推 */
+function guardRails(t) {
+  const d = dayRec(t); const h = new Date(t).getHours();
+  if (d.turns === 30 && !d.overflowTold) {
+    d.overflowTold = true;
+    runScript([{ text: pick(OVERFLOW_LINES, d.turns), mood: '调皮', act: 'wave' }], { kind: 'care' });
+  } else if (h < 5 && d.turns === 4 && !d.lateTold) {
+    d.lateTold = true;
+    runScript([{ text: pick(LATE_LINES, d.turns), mood: '困', act: 'droop' }], { kind: 'care' });
+  }
 }
 
 /* ---------------- 11. 开场与每日 ---------------- */
@@ -2223,13 +2634,31 @@ function renderMemory() {
     row.appendChild(forgetBtn('mem', m.id)); el.appendChild(row);
   }
   section('发生过的事', `${ev.length} 件`, el);
-  // 我们之间 / 扑通自己
-  for (const [type, title, empty] of [['bond', '我们之间', '你们之间的昵称、梗和约定会出现在这里。'], ['self', '扑通说过的自己', '扑通透露过的关于自己的设定，用来保持它前后一致。']]) {
-    const arr = S.memories.filter((m) => m.type === type).slice().reverse();
+  // 我们之间（可以手动记暗号） / 扑通自己
+  const bondArr = S.memories.filter((m) => m.type === 'bond').slice().reverse();
+  const bl = document.createElement('div'); bl.className = 'list';
+  if (!bondArr.length) bl.innerHTML = '<p class="empty">你们之间的昵称、梗和约定会出现在这里。也可以自己记一个。</p>';
+  for (const m of bondArr) { const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<span class="when">${fmtMD(m.at)}</span><div class="what"></div>`; row.querySelector('.what').textContent = m.text; row.appendChild(forgetBtn('mem', m.id)); bl.appendChild(row); }
+  const bondAdd = document.createElement('div'); bondAdd.className = 'bond-add';
+  bondAdd.innerHTML = '<input maxlength="40" placeholder="记一个只有你们懂的暗号…" aria-label="新的暗号"><button type="button" class="btn small">收进去</button>';
+  const bondInput = bondAdd.querySelector('input');
+  const addBond = () => {
+    const v = str(bondInput.value, 40);
+    if (!v) { toast('先写点什么，再收进去'); return; }
+    if (S.memories.some((m) => m.type === 'bond' && (m.text === v || overlap(tk(m.text), tk(v)) > 0.78))) { toast('这个暗号已经在啦'); return; }
+    S.memories.push({ id: nextId(S, 'b'), type: 'bond', text: v, imp: 7, at: nowMs(), uses: 0 });
+    save('core', 'mem'); renderMemory(); toast('收进「我们之间」了，扑通之后会用上它');
+  };
+  bondAdd.querySelector('button').addEventListener('click', addBond);
+  bondInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addBond(); } });
+  bl.appendChild(bondAdd);
+  section('我们之间', `${bondArr.length} 条`, bl);
+  {
+    const arr = S.memories.filter((m) => m.type === 'self').slice().reverse();
     const l = document.createElement('div'); l.className = 'list';
-    if (!arr.length) l.innerHTML = `<p class="empty">${empty}</p>`;
+    if (!arr.length) l.innerHTML = '<p class="empty">扑通透露过的关于自己的设定，用来保持它前后一致。</p>';
     for (const m of arr) { const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<span class="when">${fmtMD(m.at)}</span><div class="what"></div>`; row.querySelector('.what').textContent = m.text; row.appendChild(forgetBtn('mem', m.id)); l.appendChild(row); }
-    section(title, `${arr.length} 条`, l);
+    section('扑通说过的自己', `${arr.length} 条`, l);
   }
   startSky();
 }
@@ -2726,6 +3155,9 @@ function renderSettings() {
         <label class="switch"><span>显示心声（内心独白、策略、情绪）</span><input type="checkbox" id="setInner"></label>
         <label class="switch"><span>让扑通把话念出来</span><input type="checkbox" id="setTts"></label>
         <p class="desc">朗读用的是浏览器自带的中文语音，音调调高了一些。</p></div>
+      <div class="card" id="pushCard"><h3>每日扑通提醒</h3><p class="desc" id="pushDesc"></p>
+        <label class="switch"><span>到日子的挂念和每日问题，推给我</span><input type="checkbox" id="setPush"></label>
+        <p class="desc small" id="pushState"></p></div>
       <div class="card"><h3>时间机器</h3><p class="desc">快进时间，看扑通隔天怎么打招呼、怎么追问挂念的事、日记怎么一天天写。现在是 <b class="mono">${d.getMonth() + 1}/${d.getDate()} ${fmtTime(+d)}</b>${TIME_OFFSET ? '（模拟）' : ''}。</p>
         <div class="toolbar"><button class="btn small" type="button" data-travel="1">快进 1 天</button><button class="btn small" type="button" data-travel="3">快进 3 天</button><button class="btn small" type="button" data-travel="0">回到现在</button></div></div>
       <div class="card"><h3>羁绊调试</h3><p class="desc">直接把心核调到某一级，看剧情解锁和语气变化。</p>
@@ -2752,6 +3184,24 @@ function renderSettings() {
   $('#setInner').checked = !!S.settings.inner; $('#setTts').checked = !!S.settings.tts;
   $('#setInner').addEventListener('change', (e) => { S.settings.inner = e.target.checked; save('core'); renderToggles(); renderChat(); });
   $('#setTts').addEventListener('change', (e) => { S.settings.tts = e.target.checked; save('core'); renderToggles(); });
+  (async () => {
+    const pushCard = $('#pushCard'); if (!pushCard) return;
+    if (!Push.enabled) { pushCard.hidden = true; return; }
+    const sub = await Push.current();
+    const on = !!sub && Notification.permission === 'granted';
+    $('#setPush').checked = on;
+    $('#pushState').textContent = on ? '已订阅：挂念到期和每日问题会推到这台设备。' : '还没订阅。打开后会请求通知权限。';
+    $('#setPush').addEventListener('change', async (e) => {
+      if (e.target.checked) {
+        const r = await Push.enable();
+        if (r === 'on') { S.settings.push = true; save('core'); $('#pushState').textContent = '已订阅：挂念到期和每日问题会推到这台设备。'; toast('好，扑通会记得提醒你'); }
+        else { e.target.checked = false; $('#pushState').textContent = r === 'denied' ? '通知权限被浏览器拦住了，去浏览器设置里允许后再试。' : '订阅没有成功，稍后再试。'; }
+      } else {
+        S.settings.push = false; save('core'); await Push.disable();
+        $('#pushState').textContent = '已关闭。';
+      }
+    });
+  })();
   box.querySelectorAll('[data-travel]').forEach((btn) => btn.addEventListener('click', () => timeTravel(+btn.dataset.travel)));
   box.querySelectorAll('[data-lv]').forEach((btn) => btn.addEventListener('click', () => setLevelDebug(+btn.dataset.lv)));
   $('#byBase').value = b.base || ''; $('#byKey').value = b.key || ''; $('#byModel').value = b.model || '';
@@ -2826,7 +3276,55 @@ function bindUI() {
   input.addEventListener('blur', () => Avatar.listen(false));
   $('#composer').addEventListener('submit', (e) => { e.preventDefault(); submit(); });
   $('#stopBtn').addEventListener('click', () => { if (ctl) ctl.abort(); });
-  $('#alienBtn').addEventListener('click', () => Avatar.poke());
+  /* 轻点戳一戳，长按听心跳（节奏跟扑通此刻的激动程度走） */
+  const alienBtn = $('#alienBtn');
+  let pressT = 0, heartMode = false, heartTimer = 0;
+  const cancelHeart = () => { clearTimeout(heartTimer); heartTimer = 0; };
+  alienBtn.addEventListener('pointerdown', (e) => {
+    if (e.button && e.button !== 0) return;
+    pressT = Date.now();
+    heartTimer = setTimeout(() => {
+      heartMode = true;
+      Avatar.hearting(true); Avatar.setMood('害羞');
+      Avatar.pokeTimes = [];
+      const ok = Heart.start(() => Avatar.mood === '害羞' ? 84 : Math.round(58 + (S.alien.arousal || 0.4) * 72));
+      if (!ok) { cancelHeart(); heartMode = false; Avatar.hearting(false); toast('这个浏览器不支持声音'); }
+    }, 420);
+  });
+  const endPress = (poke) => {
+    if (heartMode) {
+      heartMode = false; Avatar.hearting(false); Heart.stop();
+      const first = !S.meta.flags.heartbeat;
+      if (first) { S.meta.flags.heartbeat = nowMs(); addPoints(1, nowMs(), true); save('core'); renderStatus(); }
+      const line = first ? HEARTBEAT_LINES[0] : pick(HEARTBEAT_LINES, S.meta.pokes + Date.now() % 97);
+      const b = $('#pokeBubble'); b.textContent = line; b.hidden = false; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+      clearTimeout(Avatar.pokeHide); Avatar.pokeHide = setTimeout(() => { b.hidden = true; }, 2600);
+      Avatar.setMood(first ? '害羞' : '感动');
+      clearTimeout(Avatar.pokeRestore); Avatar.pokeRestore = setTimeout(() => Avatar.setMood(S.alien.mood), 2800);
+    } else if (poke && pressT) Avatar.poke();
+    cancelHeart(); pressT = 0;
+  };
+  alienBtn.addEventListener('pointerup', () => endPress(true));
+  alienBtn.addEventListener('pointerleave', () => endPress(false));
+  alienBtn.addEventListener('pointercancel', () => endPress(false));
+  alienBtn.addEventListener('contextmenu', (e) => e.preventDefault());
+  /* 按住说话：识别结果填进输入框，让 TA 确认后自己发 */
+  const micBtn = $('#micBtn');
+  if (!Mic.supported) { micBtn.hidden = true; }
+  else {
+    micBtn.addEventListener('pointerdown', (e) => {
+      if (e.button && e.button !== 0) return;
+      if (Mic.start()) { micBtn.classList.add('on'); micBtn.setAttribute('aria-pressed', 'true'); Avatar.listen(true); }
+    });
+    const micEnd = () => {
+      if (!Mic.on && !micBtn.classList.contains('on')) return;
+      Mic.stop(); micBtn.classList.remove('on'); micBtn.setAttribute('aria-pressed', 'false'); Avatar.listen(false);
+      $('#input').focus();
+    };
+    micBtn.addEventListener('pointerup', micEnd);
+    micBtn.addEventListener('pointerleave', micEnd);
+    micBtn.addEventListener('pointercancel', micEnd);
+  }
   $('#innerToggle').addEventListener('click', () => { S.settings.inner = !S.settings.inner; save('core'); renderToggles(); renderChat(); });
   $('#ttsToggle').addEventListener('click', () => {
     S.settings.tts = !S.settings.tts; save('core'); renderToggles();
@@ -2855,7 +3353,7 @@ async function boot() {
   bindUI(); updateStage(); setInterval(updateStage, 60e3);
   renderStatus(); renderToggles(); renderChat();
   const tab = lsGet('putong:tab'); if (tab && tab !== 'chat') switchTab(tab);
-  await Promise.all([Store.detect(), LLM.detect()]);
+  await Promise.all([Store.detect(), LLM.detect(), Push.loadConfig()]);
   if (Store.mode === 'db') {
     try {
       const remote = await Store.loadDb();
@@ -2865,9 +3363,18 @@ async function boot() {
   }
   renderConn(); renderStorageLine();
   if (LLM.kind === 'none') showNoteError(llmErrorText({ code: 'no_provider' }), [['去设置', () => openLab('settings')]]);
+  if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.claude) {
+    try { navigator.serviceWorker.register('/sw.js').catch(() => {}); } catch { /* ignore */ }
+  }
+  /* 服务端设了访问码且这台设备还没敲过门：先敲门，再播开场 */
+  if (LLM.kind === 'proxy' && LLM.needCode && !lsGet(CODE_KEY)) {
+    const ok = await Knock.run();
+    if (!ok) { showNoteError(llmErrorText({ code: 'access_code' }), [['填访问码', () => Knock.run()]]); return; }
+    await LLM.detect(); renderConn();
+  }
   await greetOnOpen();
 }
-window.__putong = { get state() { return S; }, parseOutput, buildContext, buildSystem, retrieve, applyMemOps, LLM, Store, evalPrompt: (id) => { const c = EVAL_CASES.find((x) => x.id === id); const t = nowMs(); const st = evalState(c, t); st.chat.push({ role: 'user', text: c.user, at: t }); return { system: buildSystem(st), user: buildContext(st, c.user, t, { retrieved: retrieve(st, c.user, t) }) }; }, checkRule };
+window.__putong = { get state() { return S; }, parseOutput, buildContext, buildSystem, retrieve, applyMemOps, LLM, Store, Knock, Push, evalPrompt: (id) => { const c = EVAL_CASES.find((x) => x.id === id); const t = nowMs(); const st = evalState(c, t); st.chat.push({ role: 'user', text: c.user, at: t }); return { system: buildSystem(st), user: buildContext(st, c.user, t, { retrieved: retrieve(st, c.user, t) }) }; }, checkRule };
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 })();
 

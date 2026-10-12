@@ -664,3 +664,76 @@ details.raw pre, .pre {
   #alien[class*="act-"] .body-g, #alien[class*="act-"] .arm-r, #alien[class*="act-"] .core-g { animation: none !important; }
   .log { scroll-behavior: auto; }
 }
+
+/* ---------- v2：心情光线 / 心跳脉冲 / 语音输入 / 一键回应 / 礼物 / 敲门 ---------- */
+.stage { transition: filter 1.2s ease; }
+.stage.dim { filter: saturate(.78) brightness(.9); }
+
+#alien .pulse { opacity: 0; transform-box: fill-box; transform-origin: center; }
+#alien.hearting .pulse { animation: hring 1.05s ease-out infinite; }
+#alien.hearting .pulse.p2 { animation-delay: .52s; }
+@keyframes hring {
+  0% { transform: scale(.55); opacity: .85; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+.btn.mic {
+  width: 42px; height: 42px; padding: 0; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+.btn.mic.on { animation: micpulse 1.1s ease-in-out infinite; background: var(--accent-strong); border-color: var(--accent-strong); color: #fff; }
+@keyframes micpulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent-strong) 55%, transparent); }
+  50% { box-shadow: 0 0 0 7px transparent; }
+}
+
+.chip.reply {
+  border-color: color-mix(in oklab, var(--accent) 45%, var(--line));
+  color: var(--ink); background: var(--surface);
+}
+.chip.reply:hover { background: var(--accent-wash); }
+
+.gift-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--accent); border-radius: 999px; padding: 7px 14px;
+  background: var(--accent-wash); color: var(--accent-ink); font-size: 13.5px;
+  cursor: pointer; transition: filter .15s ease;
+}
+.gift-btn:hover { filter: brightness(1.04); }
+.gift-btn svg { flex-shrink: 0; }
+
+.bond-add { display: flex; gap: 8px; padding: 10px 2px 2px; }
+.bond-add input {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg); padding: 7px 14px; font-size: 13px; outline: none;
+}
+.bond-add input:focus { border-color: var(--line-2); background: var(--surface); }
+
+.knock {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(15, 20, 50, .5);
+  backdrop-filter: blur(8px) saturate(.9); -webkit-backdrop-filter: blur(8px) saturate(.9);
+}
+.knock[hidden] { display: none; }
+.knock-card {
+  width: min(340px, calc(100vw - 48px)); text-align: center;
+  border: 1px solid var(--line-2); border-radius: var(--r-md, 16px);
+  background: var(--surface); padding: 26px 22px;
+  box-shadow: 0 24px 70px -18px rgba(15, 20, 50, .55);
+  animation: knockin .35s ease-out;
+}
+@keyframes knockin { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+.knock-title { font: 24px/1.3 var(--font-display); color: var(--ink); }
+.knock-text { margin-top: 8px; color: var(--ink-2); font-size: 13.5px; line-height: 1.7; }
+.knock-row { display: flex; gap: 8px; margin-top: 14px; }
+.knock-row input {
+  flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg); padding: 8px 14px; font-size: 14px; outline: none; text-align: center;
+}
+.knock-row input:focus { border-color: var(--line-2); background: var(--surface); }
+.knock-err { margin-top: 10px; color: var(--bad); font-size: 12.5px; }
+
+@media (prefers-reduced-motion: reduce) {
+  #alien .pulse, .btn.mic.on, .knock-card { animation: none !important; }
+}

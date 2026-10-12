@@ -1,0 +1,10 @@
+{
+  "name": "putong",
+  "version": "2.0.0",
+  "private": true,
+  "description": "扑通 · AI 外星人伙伴（Netlify 页面 + edge/functions，推送函数依赖 web-push）",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.3",
+    "web-push": "^3.6.7"
+  }
+}
