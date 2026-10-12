@@ -217,10 +217,12 @@ const Push = {
     if (perm !== 'granted') return perm === 'denied' ? 'denied' : 'off';
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
-      const key = this.config.vapidPublic;
-      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8(key) }).catch(() => null);
+      sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8(key) }).then((s) => s).catch((e) => ({ __err: e && e.name }));
     }
-    if (!sub) return 'denied';
+    if (!sub || sub.__err) {
+      if (sub && (sub.__err === 'AbortError' || sub.__err === 'NotSupportedError')) return 'no-push-service';
+      return 'denied';
+    }
     this.sub = sub;
     await this.sync(true);
     return 'on';
@@ -2012,7 +2014,7 @@ function renderSettings() {
       if (e.target.checked) {
         const r = await Push.enable();
         if (r === 'on') { S.settings.push = true; save('core'); $('#pushState').textContent = '已订阅：挂念到期和每日问题会推到这台设备。'; toast('好，扑通会记得提醒你'); }
-        else { e.target.checked = false; $('#pushState').textContent = r === 'denied' ? '通知权限被浏览器拦住了，去浏览器设置里允许后再试。' : '订阅没有成功，稍后再试。'; }
+        else { e.target.checked = false; $('#pushState').textContent = r === 'denied' ? '通知权限被浏览器拦住了，去浏览器设置里允许后再试。' : r === 'no-push-service' ? '这个浏览器没有推送服务（内嵌窗口/webview 不支持）。用 Chrome 打开，或在手机上加到主屏幕再开。' : '订阅没有成功，稍后再试。'; }
       } else {
         S.settings.push = false; save('core'); await Push.disable();
         $('#pushState').textContent = '已关闭。';
