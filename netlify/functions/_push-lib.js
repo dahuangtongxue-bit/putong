@@ -33,7 +33,15 @@ export async function readBody(request) {
 }
 
 export function vapidReady() {
-  return !!env('PUSH_VAPID_PUBLIC') && !!env('PUSH_VAPID_PRIVATE');
+  const pub = cleanKey(env('PUSH_VAPID_PUBLIC'));
+  const priv = cleanKey(env('PUSH_VAPID_PRIVATE'));
+  // 有效长度：公钥 87 字符（65 字节 base64url），私钥 43 字符（32 字节）
+  return pub.length === 87 && priv.length === 43;
+}
+
+/* 环境变量里粘进来的 key 容易带上括号、引号或空格：只保留 base64url 字符 */
+export function cleanKey(s) {
+  return String(s || '').replace(/[^A-Za-z0-9_-]/g, '');
 }
 
 export async function sendTo(rec, payload, wp) {
@@ -49,6 +57,6 @@ export async function sendTo(rec, payload, wp) {
 export async function lazyWebPush() {
   const mod = await import('web-push');
   const wp = mod.default || mod;
-  wp.setVapidDetails(env('PUSH_CONTACT') || 'mailto:putong@example.com', env('PUSH_VAPID_PUBLIC'), env('PUSH_VAPID_PRIVATE'));
+  wp.setVapidDetails(env('PUSH_CONTACT') || 'mailto:putong@example.com', cleanKey(env('PUSH_VAPID_PUBLIC')), cleanKey(env('PUSH_VAPID_PRIVATE')));
   return wp;
 }
