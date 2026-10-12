@@ -215,6 +215,7 @@ const Push = {
     if (!reg) return 'no-sw';
     const perm = await Notification.requestPermission();
     if (perm !== 'granted') return perm === 'denied' ? 'denied' : 'off';
+    const key = this.config.vapidPublic;
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
       sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlB64ToUint8(key) }).then((s) => s).catch((e) => ({ __err: e && e.name }));
