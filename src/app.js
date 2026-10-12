@@ -2182,6 +2182,8 @@ async function boot() {
     } catch (e) { console.warn('[putong] db load failed', e); Store.mode = 'local'; }
   }
   renderConn(); renderStorageLine();
+  /* 恢复的标签页（实验室/日记等）可能在模型检测完成前就渲染了，重渲染一次拿掉「未连接」 */
+  if (currentTab !== 'chat') renderPanel(currentTab);
   if (LLM.kind === 'none') showNoteError(llmErrorText({ code: 'no_provider' }), [['去设置', () => openLab('settings')]]);
   if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.claude) {
     try { navigator.serviceWorker.register('/sw.js').catch(() => {}); } catch { /* ignore */ }
