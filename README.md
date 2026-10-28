@@ -49,7 +49,7 @@ netlify.toml
 |---|---|---|
 | `LLM_API_KEY` | 是 | 模型网关的 Key |
 | `LLM_API_BASE` | 否 | 默认 `https://api-model.gpulink.cc/v1`（零克云 OpenAI 兼容网关） |
-| `LLM_MODEL` | 否 | 默认 `deepseek-v4-flash-0731`，建议用不带思考的快模型 |
+| `LLM_MODEL` | 否 | 默认 `deepseek-v4.1-flash-1017`，建议用不带思考的快模型 |
 | `LLM_MODEL_FALLBACK` | 否 | 主模型 5xx / 限流 / 无可用渠道时自动切换的备用模型 |
 | `ACCESS_CODE` | 否 | 设了之后访客先在敲门层填访问码（当场校验），防止链接外传后被刷 |
 | `PUSH_VAPID_PUBLIC` | 否 | Web Push 的 VAPID 公钥；和下面的私钥一起设了才开启「每日扑通提醒」 |

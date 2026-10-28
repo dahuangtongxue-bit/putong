@@ -1985,7 +1985,7 @@ function renderSettings() {
       <div class="card" id="byokCard"><h3>自填接口</h3><p class="desc">本地打开或没有服务端时，可以填一个 OpenAI 兼容接口（例如零克云 https://api-model.gpulink.cc/v1）。密钥只存在这个浏览器里，请求从浏览器直接发出，需要接口允许跨域。</p>
         <div class="field"><label for="byBase">Base URL</label><input id="byBase" placeholder="https://api-model.gpulink.cc/v1"></div>
         <div class="field"><label for="byKey">API Key</label><input id="byKey" type="password" placeholder="sk-..."></div>
-        <div class="field"><label for="byModel">模型名</label><input id="byModel" placeholder="deepseek-v4-flash-0731"></div>
+        <div class="field"><label for="byModel">模型名</label><input id="byModel" placeholder="deepseek-v4.1-flash-1017"></div>
         <div class="toolbar"><button class="btn small" type="button" id="bySave">保存并连接</button><button class="btn small" type="button" id="byClear">清除</button></div></div>
       <div class="card" id="codeCard"><h3>访问码</h3><p class="desc">部署方设置了访问码时，在这里填一次。</p>
         <div class="field"><label for="accCode">访问码</label><input id="accCode" type="password"></div>

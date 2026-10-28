@@ -1,7 +1,7 @@
 // POST /api/chat —— 把前端的对话请求转发给 OpenAI 兼容接口（默认零克云网关），流式透传。
 // 密钥只放在 Netlify 环境变量里，浏览器拿不到。
 const DEFAULT_BASE = 'https://api-model.gpulink.cc/v1';
-const DEFAULT_MODEL = 'deepseek-v4-flash-0731';
+const DEFAULT_MODEL = 'deepseek-v4.1-flash-1017';
 
 const env = (k) => (globalThis.Netlify && Netlify.env.get(k)) || '';
 // 响应头只能放 ASCII

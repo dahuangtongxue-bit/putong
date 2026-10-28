@@ -1,6 +1,6 @@
 // GET /api/health —— 前端用它判断"有没有服务端模型可用"，不返回任何密钥。
 // 带 ?code= 查询参数时，顺带校验访问码对不对（敲门功能用），只回 true/false。
-const DEFAULT_MODEL = 'deepseek-v4-flash-0731';
+const DEFAULT_MODEL = 'deepseek-v4.1-flash-1017';
 const env = (k) => (globalThis.Netlify && Netlify.env.get(k)) || '';
 
 export default async (request) => {
