@@ -1,5 +1,5 @@
 /* 扑通 · Service Worker：静态外壳离线可用，/api/* 一律走网络 */
-const CACHE = 'putong-v2';
+const CACHE = 'soulmeet-v2';
 const PRECACHE = ['/', '/index.html', '/icon.svg', '/icon-mask.svg', '/manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {
@@ -35,7 +35,7 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', (e) => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch { /* ignore */ }
-  e.waitUntil(self.registration.showNotification(d.title || '扑通', {
+  e.waitUntil(self.registration.showNotification(d.title || 'SOULMEET', {
     body: d.body || '扑通在窗台等你。',
     icon: '/icon.svg',
     badge: '/icon-mask.svg',

@@ -383,6 +383,24 @@ function llmErrorText(e) {
   return map[c] || '信号断了一下。再发一次试试？';
 }
 
+/* SOULMEET 落地页：每次新会话先看品牌与服务说明（公开可见，无需访问码），点「进入」才进入服务 */
+const Landing = {
+  gate() {
+    const el = $('#landing'); if (!el) return Promise.resolve();
+    let entered = false;
+    try { entered = sessionStorage.getItem('soulmeet:entered') === '1'; } catch { /* ignore */ }
+    if (entered) { el.hidden = true; return Promise.resolve(); }
+    el.hidden = false;
+    return new Promise((resolve) => {
+      $('#landingEnter').addEventListener('click', () => {
+        try { sessionStorage.setItem('soulmeet:entered', '1'); } catch { /* ignore */ }
+        el.hidden = true;
+        resolve();
+      }, { once: true });
+    });
+  },
+};
+
 /* 敲门：服务端设了访问码时，在开场之前先请 TA 敲一下（别等自我介绍发出去才失败） */
 const Knock = {
   pending: null,
@@ -1994,7 +2012,7 @@ function renderSettings() {
         <div class="toolbar"><button class="btn small" type="button" id="copyData">复制全部数据（JSON）</button><button class="btn small danger" type="button" id="resetAll">清空重来</button></div>
         <textarea id="copyFallback" class="soul-editor" style="min-height:120px" hidden aria-label="全部数据"></textarea></div>
     </div>
-    <p class="mono" style="color:var(--ink-3)">扑通 ${APP_VERSION} · 人设 ${esc(soulVersion(S))}</p>
+    <p class="mono" style="color:var(--ink-3)">SOULMEET ${APP_VERSION} · AI 伙伴「扑通」 · 人设 ${esc(soulVersion(S))} · © 2026 南京畅快互娱信息技术有限公司</p>
   </section>`;
   $('#connDesc').textContent = LLM.kind === 'none' ? (window.claude ? '这个页面暂时用不了 Claude：请确认已登录 claude.ai，重新打开页面后在弹窗里允许它使用 Claude。' : '还没有连接模型。部署到 Netlify 并配置好密钥后会自动使用服务端模型；本地打开时可以在下面自填接口。') : `当前：${LLM.label}`;
   $('#tierField').hidden = LLM.kind !== 'claude';
@@ -2184,6 +2202,8 @@ async function boot() {
   renderConn(); renderStorageLine();
   /* 恢复的标签页（实验室/日记等）可能在模型检测完成前就渲染了，重渲染一次拿掉「未连接」 */
   if (currentTab !== 'chat') renderPanel(currentTab);
+  /* SOULMEET 落地页先亮出来（新会话必看品牌与服务说明），再敲门/开场 */
+  await Landing.gate();
   if (LLM.kind === 'none') showNoteError(llmErrorText({ code: 'no_provider' }), [['去设置', () => openLab('settings')]]);
   if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.claude) {
     try { navigator.serviceWorker.register('/sw.js').catch(() => {}); } catch { /* ignore */ }

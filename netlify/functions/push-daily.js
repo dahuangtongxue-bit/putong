@@ -29,7 +29,7 @@ export default async () => {
     const due = (rec.followups || []).filter((f) => f.due && f.due <= today && !sentSet.has(f.id));
     const first = due[0];
     const body = first ? (first.ask || first.text + '——后来怎么样啦？') : dailyBody;
-    const r = await sendTo(rec, { title: '扑通', body, tag: first ? 'f-' + first.id : 'daily-' + today }, wp);
+    const r = await sendTo(rec, { title: 'SOULMEET', body, tag: first ? 'f-' + first.id : 'daily-' + today }, wp);
     if (r === 'gone') { await s.delete(b.key).catch(() => {}); pruned++; continue; }
     if (r === true) {
       sent++;

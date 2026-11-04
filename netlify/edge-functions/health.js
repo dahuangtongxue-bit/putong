@@ -14,7 +14,7 @@ export default async (request) => {
   }
   return new Response(JSON.stringify({
     ok: hasKey,
-    app: 'putong',
+    app: 'soulmeet',
     version: 'v2.0',
     model: env('LLM_MODEL') || DEFAULT_MODEL,
     fallback: env('LLM_MODEL_FALLBACK') || null,

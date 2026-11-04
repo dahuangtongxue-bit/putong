@@ -1,7 +1,7 @@
 {
-  "name": "扑通 · AI 外星人伙伴",
-  "short_name": "扑通",
-  "description": "一个超拟人、高情感、有记忆的 AI 外星人伙伴，掉在你的窗台上。",
+  "name": "SOULMEET · AI 灵魂陪伴",
+  "short_name": "SOULMEET",
+  "description": "有记忆、会成长的 AI 灵魂陪伴：实时语音文字通信与在线聊天，把每天的心情写成日记与故事。",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

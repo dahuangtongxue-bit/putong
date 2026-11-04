@@ -290,7 +290,7 @@ p { margin: 0; }
 /* ---------- 状态 ---------- */
 .status { display: flex; flex-direction: column; gap: 10px; padding-inline: 4px; }
 .name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.name { font: 34px/1 var(--font-display); letter-spacing: .02em; }
+.name { font: 34px/1 var(--font-display); letter-spacing: .14em; }
 .mood-chip {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 4px 11px 4px 8px; border-radius: 999px;
@@ -736,4 +736,41 @@ details.raw pre, .pre {
 
 @media (prefers-reduced-motion: reduce) {
   #alien .pulse, .btn.mic.on, .knock-card { animation: none !important; }
+}
+
+/* ---------- SOULMEET 品牌落地页（公开可见，无需访问码） ---------- */
+.landing {
+  position: fixed; inset: 0; z-index: 55; overflow-y: auto;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 18px;
+  background: linear-gradient(180deg, #dfeaf6 0%, #f7f2ea 100%);
+}
+.landing[hidden] { display: none; }
+.landing-card {
+  width: min(540px, 100%); margin: auto; text-align: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+  padding: 34px 28px 22px;
+  box-shadow: 0 28px 80px -28px rgba(15, 20, 50, .4);
+  animation: knockin .4s ease-out;
+}
+.brand-mark { font: 44px/1.1 var(--font-display); letter-spacing: .16em; color: var(--ink); }
+.brand-tag { margin-top: 10px; color: var(--ink-2); font-size: 14.5px; }
+.landing-desc {
+  text-align: left; margin-top: 20px; padding: 16px 18px;
+  background: var(--surface-2); border-radius: 14px;
+}
+.landing-desc h2 { font: 17px/1.4 var(--font-display); color: var(--ink); }
+.landing-desc > p { margin-top: 8px; font-size: 13.5px; line-height: 1.9; color: var(--ink-2); }
+.landing-feats { list-style: none; margin-top: 12px; padding: 0; display: grid; gap: 8px; }
+.landing-feats li {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline;
+  font-size: 13px; line-height: 1.7; color: var(--ink-3);
+}
+.landing-feats b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.landing-desc .btn, .landing-card > .btn.primary { margin-top: 20px; height: 46px; padding-inline: 30px; font-size: 15.5px; }
+.landing-card > .btn.primary { margin-top: 22px; }
+.landing-foot { margin-top: 16px; font-size: 12px; color: var(--ink-3); letter-spacing: .02em; }
+@media (max-width: 420px) {
+  .brand-mark { font-size: 36px; }
+  .landing-card { padding: 26px 20px 18px; }
 }

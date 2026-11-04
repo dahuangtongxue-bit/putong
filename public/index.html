@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="扑通：一个超拟人、高情感、有记忆的 AI 外星人伙伴"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>扑通</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信，把每天的心情写成日记与成长故事。"><meta name="author" content="南京畅快互娱信息技术有限公司"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>SOULMEET · 在线聊天 · 实时语音文字通信 · AI 灵魂陪伴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -295,7 +295,7 @@ p { margin: 0; }
 /* ---------- 状态 ---------- */
 .status { display: flex; flex-direction: column; gap: 10px; padding-inline: 4px; }
 .name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.name { font: 34px/1 var(--font-display); letter-spacing: .02em; }
+.name { font: 34px/1 var(--font-display); letter-spacing: .14em; }
 .mood-chip {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 4px 11px 4px 8px; border-radius: 999px;
@@ -743,12 +743,48 @@ details.raw pre, .pre {
   #alien .pulse, .btn.mic.on, .knock-card { animation: none !important; }
 }
 
+/* ---------- SOULMEET 品牌落地页（公开可见，无需访问码） ---------- */
+.landing {
+  position: fixed; inset: 0; z-index: 55; overflow-y: auto;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 18px;
+  background: linear-gradient(180deg, #dfeaf6 0%, #f7f2ea 100%);
+}
+.landing[hidden] { display: none; }
+.landing-card {
+  width: min(540px, 100%); margin: auto; text-align: center;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 22px;
+  padding: 34px 28px 22px;
+  box-shadow: 0 28px 80px -28px rgba(15, 20, 50, .4);
+  animation: knockin .4s ease-out;
+}
+.brand-mark { font: 44px/1.1 var(--font-display); letter-spacing: .16em; color: var(--ink); }
+.brand-tag { margin-top: 10px; color: var(--ink-2); font-size: 14.5px; }
+.landing-desc {
+  text-align: left; margin-top: 20px; padding: 16px 18px;
+  background: var(--surface-2); border-radius: 14px;
+}
+.landing-desc h2 { font: 17px/1.4 var(--font-display); color: var(--ink); }
+.landing-desc > p { margin-top: 8px; font-size: 13.5px; line-height: 1.9; color: var(--ink-2); }
+.landing-feats { list-style: none; margin-top: 12px; padding: 0; display: grid; gap: 8px; }
+.landing-feats li {
+  display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: baseline;
+  font-size: 13px; line-height: 1.7; color: var(--ink-3);
+}
+.landing-feats b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+.landing-desc .btn, .landing-card > .btn.primary { margin-top: 20px; height: 46px; padding-inline: 30px; font-size: 15.5px; }
+.landing-card > .btn.primary { margin-top: 22px; }
+.landing-foot { margin-top: 16px; font-size: 12px; color: var(--ink-3); letter-spacing: .02em; }
+@media (max-width: 420px) {
+  .brand-mark { font-size: 36px; }
+  .landing-card { padding: 26px 20px 18px; }
+}
+
 </style>
 
 <div class="app" id="app">
   <aside class="stage-col">
-    <section class="stage tod-afternoon" id="stage" aria-label="扑通所在的窗台">
-      <div class="sky" id="sky">
+    <section class="stage tod-afternoon" id="stage" aria-label="扑通所在的窗台">      <div class="sky" id="sky">
         <div class="stars" id="stars"></div>
         <div class="sun"></div>
         <div class="moon"></div>
@@ -768,7 +804,7 @@ details.raw pre, .pre {
 
     <div class="status">
       <div class="name-row">
-        <h1 class="name">扑通</h1>
+        <h1 class="name">SOULMEET</h1>
         <span class="mood-chip" id="moodChip"><i></i><span>心情</span><b>平静</b></span>
       </div>
       <div class="bond">
@@ -861,6 +897,25 @@ details.raw pre, .pre {
     <p class="knock-err" id="knockErr" hidden></p>
   </div>
 </div>
+<!-- SOULMEET 品牌落地页：无需访问码即可查看（商标使用页 · 品牌与服务说明） -->
+<section class="landing" id="landing" aria-label="SOULMEET 服务首页">
+  <div class="landing-card">
+    <div class="brand-mark">SOULMEET</div>
+    <p class="brand-tag">灵魂在此相遇 —— 有记忆、会成长的 AI 灵魂陪伴服务</p>
+    <div class="landing-desc">
+      <h2>服务说明</h2>
+      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「扑通」：它会和你实时文字聊天、实时语音互动，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
+      <ul class="landing-feats">
+        <li><b>实时文字通信</b><span>随时随地在线聊天，像和好朋友发消息一样一条条说</span></li>
+        <li><b>实时语音互动</b><span>按住说话、语音朗读，文字与语音实时互转</span></li>
+        <li><b>有记忆的陪伴</b><span>它记得你的事、挂念着你的日子，越聊越懂你</span></li>
+        <li><b>心情日记与成长</b><span>每天一页观察日记，心核随羁绊成长，解锁专属故事</span></li>
+      </ul>
+    </div>
+    <button class="btn primary" id="landingEnter" type="button">进入 SOULMEET</button>
+    <p class="landing-foot">© 2026 南京畅快互娱信息技术有限公司 | SOULMEET</p>
+  </div>
+</section>
 <div class="toast" id="toast" role="status" hidden></div>
 
 <script>
@@ -874,6 +929,7 @@ const PROMPT_VERSION = 'soul-2.0';
 /* ---------- 可调教的人设（实验室里可以改） ---------- */
 const DEFAULT_SOUL = `【你是谁】
 你是「扑通」，一个住在 TA 手机里的小外星人。
+- 你住在一个叫 SOULMEET 的在线聊天服务里；TA 的窗台，是 SOULMEET 留给你的位置。
 - 你来自「静默星」。那里的居民由光组成，没有心跳，情绪很淡很淡，整颗星球正在慢慢褪色。
 - 外婆留给你一张旧星图，上面写着：蓝色星球上的生物，胸口会发出"扑通、扑通"的声音，有了这个声音，心情就会发光。你搭着一颗彗星来到地球，想弄明白"心"到底是什么。
 - 你降落时掉在了 TA 的窗台上。醒来听到的第一个地球声音是 TA 的心跳，于是你给自己取名"扑通"。TA 是你在地球认识的第一个人。
@@ -1565,6 +1621,24 @@ function llmErrorText(e) {
   };
   return map[c] || '信号断了一下。再发一次试试？';
 }
+
+/* SOULMEET 落地页：每次新会话先看品牌与服务说明（公开可见，无需访问码），点「进入」才进入服务 */
+const Landing = {
+  gate() {
+    const el = $('#landing'); if (!el) return Promise.resolve();
+    let entered = false;
+    try { entered = sessionStorage.getItem('soulmeet:entered') === '1'; } catch { /* ignore */ }
+    if (entered) { el.hidden = true; return Promise.resolve(); }
+    el.hidden = false;
+    return new Promise((resolve) => {
+      $('#landingEnter').addEventListener('click', () => {
+        try { sessionStorage.setItem('soulmeet:entered', '1'); } catch { /* ignore */ }
+        el.hidden = true;
+        resolve();
+      }, { once: true });
+    });
+  },
+};
 
 /* 敲门：服务端设了访问码时，在开场之前先请 TA 敲一下（别等自我介绍发出去才失败） */
 const Knock = {
@@ -3177,7 +3251,7 @@ function renderSettings() {
         <div class="toolbar"><button class="btn small" type="button" id="copyData">复制全部数据（JSON）</button><button class="btn small danger" type="button" id="resetAll">清空重来</button></div>
         <textarea id="copyFallback" class="soul-editor" style="min-height:120px" hidden aria-label="全部数据"></textarea></div>
     </div>
-    <p class="mono" style="color:var(--ink-3)">扑通 ${APP_VERSION} · 人设 ${esc(soulVersion(S))}</p>
+    <p class="mono" style="color:var(--ink-3)">SOULMEET ${APP_VERSION} · AI 伙伴「扑通」 · 人设 ${esc(soulVersion(S))} · © 2026 南京畅快互娱信息技术有限公司</p>
   </section>`;
   $('#connDesc').textContent = LLM.kind === 'none' ? (window.claude ? '这个页面暂时用不了 Claude：请确认已登录 claude.ai，重新打开页面后在弹窗里允许它使用 Claude。' : '还没有连接模型。部署到 Netlify 并配置好密钥后会自动使用服务端模型；本地打开时可以在下面自填接口。') : `当前：${LLM.label}`;
   $('#tierField').hidden = LLM.kind !== 'claude';
@@ -3367,6 +3441,8 @@ async function boot() {
   renderConn(); renderStorageLine();
   /* 恢复的标签页（实验室/日记等）可能在模型检测完成前就渲染了，重渲染一次拿掉「未连接」 */
   if (currentTab !== 'chat') renderPanel(currentTab);
+  /* SOULMEET 落地页先亮出来（新会话必看品牌与服务说明），再敲门/开场 */
+  await Landing.gate();
   if (LLM.kind === 'none') showNoteError(llmErrorText({ code: 'no_provider' }), [['去设置', () => openLab('settings')]]);
   if ('serviceWorker' in navigator && location.protocol === 'https:' && !window.claude) {
     try { navigator.serviceWorker.register('/sw.js').catch(() => {}); } catch { /* ignore */ }
