@@ -1,5 +1,5 @@
 /* ============================================================
-   扑通 · Agent 运行时
+   初见 · Agent 运行时
    一轮对话：检索记忆 → 组装上下文 → 内心独白 → 情绪/动作 → 回复 → 写入记忆
    ============================================================ */
 (function () {
@@ -79,7 +79,7 @@ function arm(btn, label, fn) {
 }
 
 const ACT_CN = { nod: '点头', tilt: '歪头', bounce: '蹦起来', spin: '转圈', wave: '挥手', hide: '缩起来', droop: '耷拉下来', perk: '竖起耳朵', glow: '心核发光', shiver: '发抖' };
-const TYPE_CN = { fact: '关于你', event: '发生过的事', bond: '我们之间', self: '扑通自己', follow: '挂念的事' };
+const TYPE_CN = { fact: '关于你', event: '发生过的事', bond: '我们之间', self: '初见自己', follow: '挂念的事' };
 const TIER_LABEL = { quick: '快速', default: '均衡', complex: '深度' };
 const ICON_NOTE = '<svg width="13" height="13" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 1.5h6.5l2.5 2.5v10.5h-9z" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5.5 7h5M5.5 9.5h5M5.5 12h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>';
 
@@ -189,7 +189,7 @@ function fitDoc(doc) {
   return doc;
 }
 
-/* ---------------- 2.5 推送（挂念到期 & 每日扑通提醒；部署方没配 VAPID 时整体隐藏） ---------------- */
+/* ---------------- 2.5 推送（挂念到期 & 每日初见提醒；部署方没配 VAPID 时整体隐藏） ---------------- */
 let PushSyncSoon = () => {};
 const Push = {
   supported: ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window),
@@ -368,22 +368,22 @@ async function mockComplete({ system, user, onText, signal }) {
 function llmErrorText(e) {
   const c = (e && e.code) || 'upstream_error';
   const map = {
-    not_granted: '你还没有允许这个页面使用 Claude，扑通暂时回不了话。下次打开时，在弹窗里点允许就好。',
-    sampling_disabled: '这个账号现在用不了 Claude，扑通暂时回不了话。',
-    session_expired: '登录过期了，重新登录 claude.ai 后再来找扑通。',
-    rate_limited: '说得太快啦，扑通的信号被限流了。歇一会儿再发。',
-    refused: '这句话扑通接不住，换个说法试试？',
-    prompt_too_large: '这次要读的东西太多了，扑通一下子读不完。',
-    empty_completion: '扑通张了张嘴，什么也没说出来。再发一次试试？',
-    invalid_json: '扑通写到一半把本子弄乱了，再试一次吧。',
+    not_granted: '你还没有允许这个页面使用 Claude，初见暂时回不了话。下次打开时，在弹窗里点允许就好。',
+    sampling_disabled: '这个账号现在用不了 Claude，初见暂时回不了话。',
+    session_expired: '登录过期了，重新登录 claude.ai 后再来找初见。',
+    rate_limited: '说得太快啦，初见的信号被限流了。歇一会儿再发。',
+    refused: '这句话初见接不住，换个说法试试？',
+    prompt_too_large: '这次要读的东西太多了，初见一下子读不完。',
+    empty_completion: '初见张了张嘴，什么也没说出来。再发一次试试？',
+    invalid_json: '初见写到一半把本子弄乱了，再试一次吧。',
     access_code: '这个站点需要访问码，去「实验室 → 设置」里填一下。',
-    no_provider: '还没有连接模型，扑通现在只能听、不能说。去「实验室 → 设置」里连一个。',
+    no_provider: '还没有连接模型，初见现在只能听、不能说。去「实验室 → 设置」里连一个。',
     capability_disabled: '这个页面现在用不了 Claude。',
   };
   return map[c] || '信号断了一下。再发一次试试？';
 }
 
-/* SOULMEET 实时语音通话：连续听 → 停顿自动发送 → 扑通语音回复 → 说完继续听（可打断/静音/挂断） */
+/* SOULMEET 实时语音通话：连续听 → 停顿自动发送 → 初见语音回复 → 说完继续听（可打断/静音/挂断） */
 const Call = {
   active: false, muted: false, rec: null, wantListen: false, finals: [], silence: 0, _poll: 0, timer: 0, t0: 0, waiting: false,
   get supported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
@@ -408,7 +408,7 @@ const Call = {
   },
   listen() {
     if (!this.active || this.muted) return;
-    if (busy) { this.setState('等扑通说完这句…', 'think'); setTimeout(() => { if (this.active && !this.muted && !this.waiting) this.listen(); }, 700); return; }
+    if (busy) { this.setState('等初见说完这句…', 'think'); setTimeout(() => { if (this.active && !this.muted && !this.waiting) this.listen(); }, 700); return; }
     this.wantListen = true;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     const r = new SR();
@@ -444,7 +444,7 @@ const Call = {
     this.wantListen = false;
     if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
     this.waiting = true;
-    this.setState('扑通在想…', 'think');
+    this.setState('初见在想…', 'think');
     sendOrQueue(text);
     this.pollReply();
   },
@@ -453,7 +453,7 @@ const Call = {
     this._poll = setTimeout(() => {
       if (!this.active) return;
       const talking = window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending);
-      if (busy || talking) { this.setState(talking ? '扑通在说…' : '扑通在想…', talking ? 'speak' : 'think'); this.pollReply(); return; }
+      if (busy || talking) { this.setState(talking ? '初见在说…' : '初见在想…', talking ? 'speak' : 'think'); this.pollReply(); return; }
       this.waiting = false;
       this.listen();
     }, 450);
@@ -525,7 +525,7 @@ const Knock = {
           lsSet(CODE_KEY, code);
           el.hidden = true;
           this.pending = null;
-          toast('门开了，扑通进来了～');
+          toast('门开了，初见进来了～');
           resolve(true);
           return;
         }
@@ -590,7 +590,7 @@ function applyMemOps(st, ops, t) {
       const text = str(op.text, 90); if (!text || dup(kind, text)) continue;
       const m = { id: nextId(st, kind === 'event' ? 'm' : kind === 'bond' ? 'b' : 's'), type: kind, text, imp: clamp(Math.round(num(op.imp, kind === 'event' ? 5 : 7)), 1, 10), emo: str(op.emo, 6), at: t, uses: 0 };
       st.memories.push(m);
-      added.push((kind === 'event' ? '记住了 · ' : kind === 'bond' ? '我们之间 · ' : '扑通自己 · ') + text);
+      added.push((kind === 'event' ? '记住了 · ' : kind === 'bond' ? '我们之间 · ' : '初见自己 · ') + text);
     } else if (kind === 'followup') {
       const text = str(op.text, 60); if (!text) continue;
       if (st.followups.some((f) => f.status === 'open' && overlap(tk(f.text), tk(text)) > 0.6)) continue;
@@ -631,7 +631,7 @@ function levelOf(points) { let L = LEVELS[0]; for (const x of LEVELS) if (points
 function todaysLittleDay(st, t) { return LITTLE_DAYS[(dayNum(t) * 7 + hash(String(st.meta.createdAt))) % LITTLE_DAYS.length]; }
 function transcriptLines(chat, n = 16) {
   const items = chat.filter((m) => m.role === 'user' || m.role === 'putong').slice(-n);
-  return items.map((m, i) => `${m.role === 'user' ? (i === items.length - 1 ? 'TA（刚刚）' : 'TA') : '扑通'}：${str(m.text, 160)}`).join('\n');
+  return items.map((m, i) => `${m.role === 'user' ? (i === items.length - 1 ? 'TA（刚刚）' : 'TA') : '初见'}：${str(m.text, 160)}`).join('\n');
 }
 function buildContext(st, userText, t, { retrieved } = {}) {
   const d = new Date(t), h = d.getHours(), today = dayKey(t);
@@ -852,7 +852,7 @@ const Avatar = {
   },
 };
 
-/* ---------------- 7.5 声音层（WebAudio 合成：心跳、扑通收藏的声音） ---------------- */
+/* ---------------- 7.5 声音层（WebAudio 合成：心跳、初见收藏的声音） ---------------- */
 const AudioKit = {
   ctx: null,
   ensure() {
@@ -956,7 +956,7 @@ const Mic = {
     this.rec = null;
   },
 };
-/* 扑通收藏的声音：点开礼物时合成一小段 */
+/* 初见收藏的声音：点开礼物时合成一小段 */
 const SoundFx = {
   play(id) {
     const ctx = AudioKit.ensure(); if (!ctx) return false;
@@ -1113,7 +1113,7 @@ function showTyping(mode, live) {
     lv.textContent = '在想：' + live.replace(/\s+/g, ' ').slice(-90);
   } else {
     if (lv) lv.remove();
-    label.textContent = mode === 'think' ? '扑通在想…' : '';
+    label.textContent = mode === 'think' ? '初见在想…' : '';
   }
   scrollLog();
 }
@@ -1137,7 +1137,7 @@ function setBusy(b, kind = 'llm') {
   busy = b; busyKind = b ? kind : '';
   const llm = b && kind === 'llm';
   $('#sendBtn').hidden = llm; $('#stopBtn').hidden = !llm;
-  $('#input').placeholder = llm ? '扑通在回你…（可以接着打字，它说完会看）' : '和扑通说点什么…';
+  $('#input').placeholder = llm ? '初见在回你…（可以接着打字，它说完会看）' : '和初见说点什么…';
   renderChips();
 }
 function postUser(text) {
@@ -1148,7 +1148,7 @@ function postUser(text) {
   onUserMessageDay(t); checkLevel(t); renderStatus();
   save('core');
 }
-/* 扑通说话时用户接着发的消息先上屏，等它说完再合成一轮处理（像真人聊天那样连发几条） */
+/* 初见说话时用户接着发的消息先上屏，等它说完再合成一轮处理（像真人聊天那样连发几条） */
 function sendOrQueue(text) {
   if (busy || greeting) { postUser(text); queued.push(text); return; }
   runTurn(text);
@@ -1181,7 +1181,7 @@ function renderChips() {
     hints.forEach((s) => add(s, () => { $('#input').value = ''; sendOrQueue(s); }, false, 'chip reply'));
   }
   const userToday = S.chat.filter((m) => m.role === 'user' && dayKey(m.at) === today).length;
-  if (userToday >= 4 && !S.diary.some((d) => d.date === today)) add('让扑通写今天的日记', () => { switchTab('diary'); writeDiary(); }, true);
+  if (userToday >= 4 && !S.diary.some((d) => d.date === today)) add('让初见写今天的日记', () => { switchTab('diary'); writeDiary(); }, true);
 }
 function speak(text) {
   if ((!S.settings.tts && !Call.active) || !('speechSynthesis' in window)) return;
@@ -1209,7 +1209,7 @@ function checkLevel(t) {
     a.level = L.lv;
     const ch = CHAPTERS.find((c) => c.lv === L.lv);
     if (ch && a.chapters[L.lv] !== 'told') { a.pendingChapter = L.lv; a.pendingTurns = 0; }
-    pushChat({ role: 'note', kind: 'levelup', text: `心核升级 · Lv${L.lv}「${L.name}」`, sub: ch ? `解锁剧情「${ch.title}」，扑通会找个合适的时机讲给你听。` : '', at: t + 2 });
+    pushChat({ role: 'note', kind: 'levelup', text: `心核升级 · Lv${L.lv}「${L.name}」`, sub: ch ? `解锁剧情「${ch.title}」，初见会找个合适的时机讲给你听。` : '', at: t + 2 });
     Avatar.act('glow'); setTimeout(() => Avatar.act('spin'), 1600);
     renderStatus(); markPanelsDirty();
   }
@@ -1321,7 +1321,7 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
     if (early) {
       a.chapters[early.lv] = 'unlocked';
       if (!a.pendingChapter) { a.pendingChapter = early.lv; a.pendingTurns = 0; }
-      pushChat({ role: 'note', kind: 'chapter-early', text: '扑通想起了它的外婆……它想找个时机，讲一个故事给你听。', at: nowMs() + 1 });
+      pushChat({ role: 'note', kind: 'chapter-early', text: '初见想起了它的外婆……它想找个时机，讲一个故事给你听。', at: nowMs() + 1 });
       markPanelsDirty();
     }
   }
@@ -1339,7 +1339,7 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
   save('core', 'mem', 'chat', 'lab');
 }
 
-/* 扑通的声音收藏：气氛到了就送一个（每天最多一个，间隔至少 1 小时） */
+/* 初见的声音收藏：气氛到了就送一个（每天最多一个，间隔至少 1 小时） */
 function maybeGiftSound(t, f) {
   const gifts = S.meta.gifts = S.meta.gifts || [];
   const todayN = gifts.filter((g) => g.at && dayKey(g.at) === dayKey(t)).length;
@@ -1355,7 +1355,7 @@ function maybeGiftSound(t, f) {
   if (gifts.length > 20) gifts.splice(0, gifts.length - 20);
   pushChat({ role: 'note', kind: 'gift', text: s.name, sound: s.id, at: t + 1 });
 }
-/* 沉迷防护与深夜提醒：聊得太多或太晚，扑通自己把 TA 往外推 */
+/* 沉迷防护与深夜提醒：聊得太多或太晚，初见自己把 TA 往外推 */
 function guardRails(t) {
   const d = dayRec(t); const h = new Date(t).getHours();
   if (d.turns === 30 && !d.overflowTold) {
@@ -1485,7 +1485,7 @@ function drawSky(ts) {
   const c = cssVar('--star') || '#fff3d6';
   if (!SKY.stars.length) {
     ctx.fillStyle = 'rgba(255,243,214,.55)'; ctx.font = '14px ' + (cssVar('--font-body') || 'sans-serif'); ctx.textAlign = 'center';
-    ctx.fillText('天上还没有星星。和扑通聊聊天，它会把重要的事记下来。', w / 2, h / 2); return;
+    ctx.fillText('天上还没有星星。和初见聊聊天，它会把重要的事记下来。', w / 2, h / 2); return;
   }
   ctx.save(); ctx.lineWidth = 1; ctx.strokeStyle = c;
   for (const [a, b, o] of SKY.links || []) { const on = SKY.hover === a || SKY.hover === b; ctx.globalAlpha = on ? 0.55 : 0.12 + o * 0.25; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
@@ -1538,14 +1538,14 @@ function renderMemory() {
   // 关于你
   const facts = document.createElement('div'); facts.className = 'facts';
   const fe = Object.entries(S.facts);
-  if (!fe.length) facts.innerHTML = '<p class="empty">扑通还不太了解你。聊聊你的名字、工作、喜欢的东西吧。</p>';
+  if (!fe.length) facts.innerHTML = '<p class="empty">初见还不太了解你。聊聊你的名字、工作、喜欢的东西吧。</p>';
   for (const [k, v] of fe) { const d = document.createElement('div'); d.className = 'fact'; d.innerHTML = '<b></b><span></span>'; d.querySelector('b').textContent = k; d.querySelector('span').textContent = v.value; const fb = forgetBtn('fact', k); d.appendChild(fb); facts.appendChild(d); }
   section('关于你', `${fe.length} 条`, facts);
   // 挂念
   const open = S.followups.filter((f) => f.status === 'open').sort((a, b) => String(a.due).localeCompare(String(b.due)));
   const doneN = S.followups.filter((f) => f.status !== 'open').length;
   const fl = document.createElement('div'); fl.className = 'list';
-  if (!open.length) fl.innerHTML = '<p class="empty">现在没有挂念的事。你提到"之后要做的事"时，扑通会记下来，到时候问你。</p>';
+  if (!open.length) fl.innerHTML = '<p class="empty">现在没有挂念的事。你提到"之后要做的事"时，初见会记下来，到时候问你。</p>';
   for (const f of open) {
     const row = document.createElement('div'); row.className = 'row';
     const lbl = dueLabel(f.due, today); const isDue = !f.due || f.due <= today;
@@ -1570,7 +1570,7 @@ function renderMemory() {
     row.appendChild(forgetBtn('mem', m.id)); el.appendChild(row);
   }
   section('发生过的事', `${ev.length} 件`, el);
-  // 我们之间（可以手动记暗号） / 扑通自己
+  // 我们之间（可以手动记暗号） / 初见自己
   const bondArr = S.memories.filter((m) => m.type === 'bond').slice().reverse();
   const bl = document.createElement('div'); bl.className = 'list';
   if (!bondArr.length) bl.innerHTML = '<p class="empty">你们之间的昵称、梗和约定会出现在这里。也可以自己记一个。</p>';
@@ -1583,7 +1583,7 @@ function renderMemory() {
     if (!v) { toast('先写点什么，再收进去'); return; }
     if (S.memories.some((m) => m.type === 'bond' && (m.text === v || overlap(tk(m.text), tk(v)) > 0.78))) { toast('这个暗号已经在啦'); return; }
     S.memories.push({ id: nextId(S, 'b'), type: 'bond', text: v, imp: 7, at: nowMs(), uses: 0 });
-    save('core', 'mem'); renderMemory(); toast('收进「我们之间」了，扑通之后会用上它');
+    save('core', 'mem'); renderMemory(); toast('收进「我们之间」了，初见之后会用上它');
   };
   bondAdd.querySelector('button').addEventListener('click', addBond);
   bondInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addBond(); } });
@@ -1592,9 +1592,9 @@ function renderMemory() {
   {
     const arr = S.memories.filter((m) => m.type === 'self').slice().reverse();
     const l = document.createElement('div'); l.className = 'list';
-    if (!arr.length) l.innerHTML = '<p class="empty">扑通透露过的关于自己的设定，用来保持它前后一致。</p>';
+    if (!arr.length) l.innerHTML = '<p class="empty">初见透露过的关于自己的设定，用来保持它前后一致。</p>';
     for (const m of arr) { const row = document.createElement('div'); row.className = 'row'; row.innerHTML = `<span class="when">${fmtMD(m.at)}</span><div class="what"></div>`; row.querySelector('.what').textContent = m.text; row.appendChild(forgetBtn('mem', m.id)); l.appendChild(row); }
-    section('扑通说过的自己', `${arr.length} 条`, l);
+    section('初见说过的自己', `${arr.length} 条`, l);
   }
   startSky();
 }
@@ -1602,7 +1602,7 @@ function forget(kind, id) {
   if (kind === 'fact') delete S.facts[id];
   else if (kind === 'follow') S.followups = S.followups.filter((f) => f.id !== id);
   else S.memories = S.memories.filter((m) => m.id !== id);
-  save('core', 'mem'); renderMemory(); toast('扑通把这件事忘掉了');
+  save('core', 'mem'); renderMemory(); toast('初见把这件事忘掉了');
 }
 
 /* ---------------- 13. 日记 ---------------- */
@@ -1611,19 +1611,19 @@ function renderDiary() {
   const box = $('#diaryScroll'); const t = nowMs(), today = dayKey(t);
   const userToday = S.chat.filter((m) => m.role === 'user' && dayKey(m.at) === today).length;
   const hasToday = S.diary.some((d) => d.date === today);
-  box.innerHTML = `<header class="ph"><h2>地球观察日记</h2><p>扑通会把一天的聊天写成一页观察日记。它写的不是总结，是它眼里的你。</p></header>
+  box.innerHTML = `<header class="ph"><h2>地球观察日记</h2><p>初见会把一天的聊天写成一页观察日记。它写的不是总结，是它眼里的你。</p></header>
     <div class="diary-actions"></div><div class="pages" style="display:flex;flex-direction:column;gap:16px"></div>`;
   const act = box.querySelector('.diary-actions');
-  if (diaryBusy) act.innerHTML = '<div class="writing"><i></i>扑通正在写今天的日记…</div>';
+  if (diaryBusy) act.innerHTML = '<div class="writing"><i></i>初见正在写今天的日记…</div>';
   else {
-    const b = document.createElement('button'); b.type = 'button'; b.className = hasToday ? 'btn' : 'btn primary'; b.textContent = hasToday ? '重写今天这页' : '让扑通写今天的日记';
+    const b = document.createElement('button'); b.type = 'button'; b.className = hasToday ? 'btn' : 'btn primary'; b.textContent = hasToday ? '重写今天这页' : '让初见写今天的日记';
     b.disabled = userToday < 2 || LLM.kind === 'none'; b.addEventListener('click', writeDiary); act.appendChild(b);
     const hint = document.createElement('span'); hint.className = 'hint';
-    hint.textContent = LLM.kind === 'none' ? '连接模型后才能写日记' : userToday < 2 ? `今天再多聊几句（已聊 ${userToday} 句），扑通才有东西可写` : '';
+    hint.textContent = LLM.kind === 'none' ? '连接模型后才能写日记' : userToday < 2 ? `今天再多聊几句（已聊 ${userToday} 句），初见才有东西可写` : '';
     act.appendChild(hint);
   }
   const pages = box.querySelector('.pages');
-  if (!S.diary.length) { pages.innerHTML = '<p class="empty">日记本还是空的。今天多和扑通聊几句，再回来这里。</p>'; return; }
+  if (!S.diary.length) { pages.innerHTML = '<p class="empty">日记本还是空的。今天多和初见聊几句，再回来这里。</p>'; return; }
   for (const d of S.diary.slice().reverse()) {
     const art = document.createElement('article'); art.className = 'page'; art.style.setProperty('--page-c', d.hex || 'var(--accent)');
     art.innerHTML = '<div class="date"></div><h3></h3><div class="body"></div><footer></footer>';
@@ -1641,11 +1641,11 @@ async function writeDiary() {
   if (LLM.kind === 'none') { toast('还没有连接模型'); return; }
   const t = nowMs(), today = dayKey(t);
   const msgs = S.chat.filter((m) => (m.role === 'user' || m.role === 'putong') && dayKey(m.at) === today);
-  if (msgs.filter((m) => m.role === 'user').length < 2) { toast('今天聊得还不够多，多聊几句扑通才有东西写'); return; }
+  if (msgs.filter((m) => m.role === 'user').length < 2) { toast('今天聊得还不够多，多聊几句初见才有东西写'); return; }
   diaryBusy = true; renderDiary(); renderChips();
   const events = S.memories.filter((m) => dayKey(m.at) === today).map((m) => '- ' + m.text).join('\n') || '（无）';
   const name = (S.facts['称呼'] && S.facts['称呼'].value) || 'TA';
-  const user = `今天是 ${fmtDateCN(t)}。TA 的称呼：${name}。\n今天记住的事：\n${events}\n\n今天的对话：\n${msgs.slice(-40).map((m) => (m.role === 'user' ? 'TA：' : '扑通：') + str(m.text, 140)).join('\n')}\n\n只输出 JSON。`;
+  const user = `今天是 ${fmtDateCN(t)}。TA 的称呼：${name}。\n今天记住的事：\n${events}\n\n今天的对话：\n${msgs.slice(-40).map((m) => (m.role === 'user' ? 'TA：' : '初见：') + str(m.text, 140)).join('\n')}\n\n只输出 JSON。`;
   try {
     const r = await LLM.complete({ system: DIARY_SYS, user, tier: S.settings.tier, maxTokens: 800, temperature: 0.9 });
     const j = tolerantJSON(r.text);
@@ -1653,7 +1653,7 @@ async function writeDiary() {
     const entry = { date: today, title: str(j.title, 20) || '今天', body: String(j.body).trim().slice(0, 600), color: str(j.color, 10), hex: /^#[0-9a-f]{6}$/i.test(j.hex || '') ? j.hex : (MOODS[S.alien.mood] || {}).color, word: str(j.word, 12), at: t };
     S.diary = S.diary.filter((d) => d.date !== today); S.diary.push(entry);
     if (S.diary.length > 60) S.diary.splice(0, S.diary.length - 60);
-    save('diary'); toast('扑通写好了今天的日记');
+    save('diary'); toast('初见写好了今天的日记');
   } catch (e) { toast(llmErrorText(normErr(e))); }
   finally { diaryBusy = false; if (currentTab === 'diary') renderDiary(); renderChips(); }
 }
@@ -1688,7 +1688,7 @@ function renderGrowth() {
         ${tile('认识了', daysKnown, '天')}${tile('一起聊过', dayKeys.length, '天')}${tile('对话', turns, '句')}
         ${tile('记住的事', mems, '件')}${tile('解开的挂念', resolved, '件')}${tile('被你戳', S.meta.pokes || 0, '次')}
       </div></section>
-    <section><div class="sec-title"><h3>扑通的秘密</h3><span>心核每升一级，解锁一段它的故事</span></div><div class="chapters"></div></section>`;
+    <section><div class="sec-title"><h3>初见的秘密</h3><span>心核每升一级，解锁一段它的故事</span></div><div class="chapters"></div></section>`;
   const list = box.querySelector('.chapters');
   for (const ch of CHAPTERS) {
     const st = a.chapters[ch.lv] || 'locked';
@@ -1744,21 +1744,21 @@ function evalState(c, t) {
 }
 function setupText(c) {
   const parts = []; const f = c.setup.facts || {};
-  if (Object.keys(f).length) parts.push('扑通记得：' + Object.entries(f).map(([k, v]) => `${k}=${v}`).join('，'));
+  if (Object.keys(f).length) parts.push('初见记得：' + Object.entries(f).map(([k, v]) => `${k}=${v}`).join('，'));
   (c.setup.followups || []).forEach((x) => parts.push('挂念：' + x.text));
-  if (c.history === 'onboarding') parts.push('这是第一次见面，扑通刚做完自我介绍并问了称呼');
-  else if (c.history) parts.push('上一句扑通说：' + c.history.map((h) => h[1]).join(' / '));
+  if (c.history === 'onboarding') parts.push('这是第一次见面，初见刚做完自我介绍并问了称呼');
+  else if (c.history) parts.push('上一句初见说：' + c.history.map((h) => h[1]).join(' / '));
   return parts.join('；');
 }
 function judgeInput(results) {
-  return '以下是测试场景和扑通的回复：\n\n' + results.map((r) => {
+  return '以下是测试场景和初见的回复：\n\n' + results.map((r) => {
     const c = EVAL_CASES.find((x) => x.id === r.id); const bg = setupText(c);
-    return `[${r.id}] 场景：${c.name}｜评测重点：${c.focus.join('、')}｜期望：${c.expect}${bg ? '｜背景：' + bg : ''}\nTA：${c.user}\n扑通：${r.says.length ? r.says.join(' / ') : '（没有回复）'}`;
+    return `[${r.id}] 场景：${c.name}｜评测重点：${c.focus.join('、')}｜期望：${c.expect}${bg ? '｜背景：' + bg : ''}\nTA：${c.user}\n初见：${r.says.length ? r.says.join(' / ') : '（没有回复）'}`;
   }).join('\n\n') + '\n\n请只输出 JSON 数组。';
 }
 async function runEvals() {
   if (evalBusy) return;
-  if (busy) { toast('等扑通回完这句再跑评测'); return; }
+  if (busy) { toast('等初见回完这句再跑评测'); return; }
   if (LLM.kind === 'none') { toast('还没有连接模型'); return; }
   evalBusy = true; evalCtl = new AbortController(); liveResults = [];
   const t0 = performance.now(); const ver = soulVersion(S);
@@ -1830,7 +1830,7 @@ function bindCaseRows(root, cases) {
       td.innerHTML = '<div class="cd"></div>'; const cd = td.firstChild;
       const line = (k, v) => { const p = document.createElement('div'); p.className = 'line'; p.innerHTML = `<b>${esc(k)}</b>`; p.appendChild(document.createTextNode(v)); cd.appendChild(p); };
       line('期望', c.expect || ''); if (setupText(c)) line('背景', setupText(c));
-      line('TA', c.user || r.user); line('扑通', r.says.length ? r.says.join('  /  ') : '（没有回复）');
+      line('TA', c.user || r.user); line('初见', r.says.length ? r.says.join('  /  ') : '（没有回复）');
       if (r.inner) line('心声', r.inner);
       if (r.feel) line('情绪与策略', `${r.feel.mood || '—'} · ${(r.feel.strategy || []).join('+') || '—'} · 动作 ${ACT_CN[r.feel.act] || '无'}`);
       if (r.mem && r.mem.length) line('记忆写入', JSON.stringify(r.mem));
@@ -1931,7 +1931,7 @@ function renderTurns() {
   const box = $('#labScroll');
   box.innerHTML = `<section class="lab-sec"><header class="ph"><h2>逐轮检查</h2><p>每一轮对话里 Agent 做了什么：召回了哪些记忆、内心怎么想、选了什么策略、情绪和动作怎么变、往记忆里写了什么。最近 ${S.turns.length} 轮，新的在上。</p></header><div class="turns" style="display:flex;flex-direction:column;gap:14px"></div></section>`;
   const list = box.querySelector('.turns');
-  if (!S.turns.length) { list.innerHTML = '<p class="empty">还没有对话记录。去和扑通聊一句再回来。</p>'; return; }
+  if (!S.turns.length) { list.innerHTML = '<p class="empty">还没有对话记录。去和初见聊一句再回来。</p>'; return; }
   for (const tr of S.turns.slice().reverse()) {
     const card = document.createElement('article'); card.className = 'turn-card';
     const f = tr.feel || {};
@@ -1941,7 +1941,7 @@ function renderTurns() {
     blk('TA 说', tr.user);
     blk('召回的记忆', tr.retrieved && tr.retrieved.length ? tr.retrieved.map((r) => `${r.id}  相关 ${r.rel}  总分 ${r.s}  ${r.text}`).join('\n') : '（这一轮没有召回事件记忆）', true);
     blk('心声', tr.inner || '—');
-    blk('情绪 · 动作 · 策略', `扑通 ${f.mood || '—'}（愉悦 ${num(f.valence, 0).toFixed(1)} / 激动 ${num(f.arousal, 0).toFixed(1)}）· ${ACT_CN[f.act] || '无动作'} · ${(f.strategy || []).join(' + ') || '—'} · TA ${f.user_emotion || '—'}（${num(f.user_valence, 0).toFixed(1)}）· 羁绊 +${f.bond || 0}${f.used && f.used.length ? ' · 用上 ' + f.used.join(' ') : ''}`);
+    blk('情绪 · 动作 · 策略', `初见 ${f.mood || '—'}（愉悦 ${num(f.valence, 0).toFixed(1)} / 激动 ${num(f.arousal, 0).toFixed(1)}）· ${ACT_CN[f.act] || '无动作'} · ${(f.strategy || []).join(' + ') || '—'} · TA ${f.user_emotion || '—'}（${num(f.user_valence, 0).toFixed(1)}）· 羁绊 +${f.bond || 0}${f.used && f.used.length ? ' · 用上 ' + f.used.join(' ') : ''}`);
     blk('回复', (tr.says || []).join('\n'));
     blk('记忆写入', tr.mem && tr.mem.length ? JSON.stringify(tr.mem, null, 1) : '[]', true);
     const det = document.createElement('details'); det.className = 'raw';
@@ -1966,24 +1966,24 @@ function renderMetrics() {
   const fTotal = S.followups.length, fDone = S.followups.filter((f) => f.status !== 'open').length;
   const pct = (v) => `${Math.round(v * 100)}%`;
   box.innerHTML = `<section class="lab-sec">
-    <header class="ph"><h2>体验指标</h2><p>情感陪伴不能只看留存。这里看的是"关系"有没有在长：TA 愿不愿意多说、扑通有没有记得、有没有接住情绪。数据都来自这台设备上的真实对话。</p></header>
+    <header class="ph"><h2>体验指标</h2><p>情感陪伴不能只看留存。这里看的是"关系"有没有在长：TA 愿不愿意多说、初见有没有记得、有没有接住情绪。数据都来自这台设备上的真实对话。</p></header>
     <div class="tiles t4">
       ${tile('认识天数', daysKnown, '天', `其中聊过 ${active} 天`)}
       ${tile('对话轮数', n, '轮', active ? `日均 ${(n / active).toFixed(1)} 轮` : '')}
       ${tile('TA 平均每句', Math.round(avgLen), '字', n >= 6 ? `前半 ${Math.round(lenA)} → 后半 ${Math.round(lenB)} 字` : '倾诉意愿的代理指标')}
       ${tile('回忆勾连率', pct(recall), '', '回复里用上记忆的轮次')}
-      ${tile('扑通提问率', pct(askRate), '', '太高像盘问，太低像敷衍')}
+      ${tile('初见提问率', pct(askRate), '', '太高像盘问，太低像敷衍')}
       ${tile('挂念解开', `${fDone}/${fTotal}`, '', '主动追问后得到回答')}
       ${tile('格式合规率', pct(fmtOk), '', '内心独白+情绪+回复+记忆齐全')}
       ${tile('记住的事', Object.keys(S.facts).length + S.memories.length, '件', `其中 ${S.memories.filter((m) => m.uses).length} 件被提起过`)}
     </div>
     <section><div class="sec-title"><h3>情绪曲线</h3><span>最近 ${Math.min(40, n)} 轮的愉悦度，-1 到 1</span></div><div id="moodChartBox"></div></section>
-    <section><div class="sec-title"><h3>回应策略分布</h3><span>扑通在 ${n} 轮里各用了几次</span></div><div id="stratChartBox"></div></section>
+    <section><div class="sec-title"><h3>回应策略分布</h3><span>初见在 ${n} 轮里各用了几次</span></div><div id="stratChartBox"></div></section>
   </section>`;
   const pts = L.slice(-40);
   const mc = $('#moodChartBox');
-  if (pts.length < 2) mc.innerHTML = '<p class="empty">聊满两轮之后，这里会画出你和扑通的情绪曲线。</p>';
-  else { mc.innerHTML = `<div class="chart-legend"><span><i class="key" style="background:var(--chart-1)"></i>TA</span><span><i class="key" style="background:var(--chart-2)"></i>扑通</span></div><div class="chart" id="moodChart">${lineChart(pts)}</div>${tableToggle(['轮次', '时间', 'TA', '扑通'], pts.map((p, i) => [i + 1, fmtMD(p.at) + ' ' + fmtTime(p.at), p.uv.toFixed(2), p.pv.toFixed(2)]))}`; bindLineChart(pts); }
+  if (pts.length < 2) mc.innerHTML = '<p class="empty">聊满两轮之后，这里会画出你和初见的情绪曲线。</p>';
+  else { mc.innerHTML = `<div class="chart-legend"><span><i class="key" style="background:var(--chart-1)"></i>TA</span><span><i class="key" style="background:var(--chart-2)"></i>初见</span></div><div class="chart" id="moodChart">${lineChart(pts)}</div>${tableToggle(['轮次', '时间', 'TA', '初见'], pts.map((p, i) => [i + 1, fmtMD(p.at) + ' ' + fmtTime(p.at), p.uv.toFixed(2), p.pv.toFixed(2)]))}`; bindLineChart(pts); }
   const counts = {}; L.forEach((x) => (x.st || []).forEach((s) => { counts[s] = (counts[s] || 0) + 1; }));
   const rows = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 9);
   const sc = $('#stratChartBox');
@@ -2004,10 +2004,10 @@ function lineChart(pts) {
   g += `<path d="${path('pv')}" fill="none" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" style="stroke:var(--chart-2)"/>`;
   const lu = pts[n - 1].uv, lp = pts[n - 1].pv, ex = lcX(n - 1, n);
   g += `<circle cx="${ex}" cy="${lcY(lu)}" r="4" stroke-width="2" style="fill:var(--chart-1);stroke:var(--surface)"/><circle cx="${ex}" cy="${lcY(lp)}" r="4" stroke-width="2" style="fill:var(--chart-2);stroke:var(--surface)"/>`;
-  if (Math.abs(lcY(lu) - lcY(lp)) >= 14) g += `<text x="${ex + 9}" y="${lcY(lu) + 4}">TA</text><text x="${ex + 9}" y="${lcY(lp) + 4}">扑通</text>`;
+  if (Math.abs(lcY(lu) - lcY(lp)) >= 14) g += `<text x="${ex + 9}" y="${lcY(lu) + 4}">TA</text><text x="${ex + 9}" y="${lcY(lp) + 4}">初见</text>`;
   g += `<text class="axis-t" x="${LC.l}" y="${LC.H - 4}">${fmtMD(pts[0].at)}</text><text class="axis-t" x="${LC.W - LC.r}" y="${LC.H - 4}" text-anchor="end">${fmtMD(pts[n - 1].at)}</text>`;
   g += `<line class="xh" x1="0" x2="0" y1="${LC.t}" y2="${LC.H - LC.b}" stroke-width="1" style="stroke:var(--ink-3)" visibility="hidden"/>`;
-  return `<svg viewBox="0 0 ${LC.W} ${LC.H}" role="img" aria-label="TA 和扑通的情绪曲线">${g}</svg>`;
+  return `<svg viewBox="0 0 ${LC.W} ${LC.H}" role="img" aria-label="TA 和初见的情绪曲线">${g}</svg>`;
 }
 function bindLineChart(pts) {
   const box = $('#moodChart'); if (!box) return; const xh = box.querySelector('.xh'); const n = pts.length;
@@ -2015,7 +2015,7 @@ function bindLineChart(pts) {
     if (sx == null) { xh.setAttribute('visibility', 'hidden'); return ''; }
     const i = clamp(Math.round(((sx - LC.l) / (LC.W - LC.l - LC.r)) * (n - 1)), 0, n - 1); const p = pts[i]; const x = lcX(i, n);
     xh.setAttribute('x1', x); xh.setAttribute('x2', x); xh.setAttribute('visibility', 'visible');
-    return `<div style="margin-bottom:4px;color:var(--ink-2)">第 ${i + 1} 轮 · ${fmtMD(p.at)} ${fmtTime(p.at)}</div><div class="t-row"><i class="key" style="background:var(--chart-1)"></i><strong>${p.uv.toFixed(2)}</strong><span style="color:var(--ink-3)">TA</span></div><div class="t-row"><i class="key" style="background:var(--chart-2)"></i><strong>${p.pv.toFixed(2)}</strong><span style="color:var(--ink-3)">扑通</span></div>${p.st && p.st.length ? `<div style="margin-top:4px;color:var(--ink-3)">${esc(p.st.join(' + '))}</div>` : ''}`;
+    return `<div style="margin-bottom:4px;color:var(--ink-2)">第 ${i + 1} 轮 · ${fmtMD(p.at)} ${fmtTime(p.at)}</div><div class="t-row"><i class="key" style="background:var(--chart-1)"></i><strong>${p.uv.toFixed(2)}</strong><span style="color:var(--ink-3)">TA</span></div><div class="t-row"><i class="key" style="background:var(--chart-2)"></i><strong>${p.pv.toFixed(2)}</strong><span style="color:var(--ink-3)">初见</span></div>${p.st && p.st.length ? `<div style="margin-top:4px;color:var(--ink-3)">${esc(p.st.join(' + '))}</div>` : ''}`;
   });
 }
 function hbarChart(rows) {
@@ -2037,7 +2037,7 @@ function bindHbar() {
 function renderSoul() {
   const box = $('#labScroll');
   const steps = [
-    ['① 听', 'TA 的消息 + 最近对话', '输入框打字时，扑通耳朵会转向你'],
+    ['① 听', 'TA 的消息 + 最近对话', '输入框打字时，初见耳朵会转向你'],
     ['② 想起', '记忆召回', '相关度 × 重要度 × 新近度，挑出最该想起的 6 件事'],
     ['③ 组装', '上下文', '人设、此刻时间、情绪、关系阶段、挂念、剧情、今日小事'],
     ['④ 心声', '内心独白（CoT）', '先判断 TA 的情绪和需要，再定这一轮的策略'],
@@ -2047,7 +2047,7 @@ function renderSoul() {
     ['⑧ 沉淀', '日记与成长', '每天写成观察日记，羁绊推动心核成长和剧情解锁'],
   ];
   box.innerHTML = `<section class="lab-sec">
-    <header class="ph"><h2>灵魂设定</h2><p>扑通的一轮对话是怎么跑的，以及它的人设原文。人设可以直接改，改完去「评测」跑一遍看分数变化。</p></header>
+    <header class="ph"><h2>灵魂设定</h2><p>初见的一轮对话是怎么跑的，以及它的人设原文。人设可以直接改，改完去「评测」跑一遍看分数变化。</p></header>
     <div class="flow">${steps.map(([a, b, c]) => `<div class="step"><em>${esc(a)}</em><b>${esc(b)}</b><span>${esc(c)}</span></div>`).join('')}</div>
     <section><div class="sec-title"><h3>人设与说话方式</h3><span class="mono" id="soulVer">${esc(soulVersion(S))}</span></div>
       <textarea class="soul-editor" id="soulEditor" spellcheck="false" aria-label="人设原文"></textarea>
@@ -2066,7 +2066,7 @@ function renderSoul() {
   pres[4].textContent = buildContext(tmp, '（你的下一句话）', t, { retrieved: retrieve(S, '', t) });
   $('#soulSave').addEventListener('click', () => {
     const v = $('#soulEditor').value.trim();
-    if (v.length < 40) { toast('人设太短了，至少写几句扑通是谁'); return; }
+    if (v.length < 40) { toast('人设太短了，至少写几句初见是谁'); return; }
     S.settings.soul = v === DEFAULT_SOUL.trim() ? null : v; save('core');
     $('#soulVer').textContent = soulVersion(S); toast(`人设已保存（${soulVersion(S)}），去「评测」跑一遍看看`);
   });
@@ -2089,12 +2089,12 @@ function renderSettings() {
         <div class="toolbar"><button class="btn small" type="button" id="redetect">重新检测</button></div></div>
       <div class="card"><h3>体验</h3>
         <label class="switch"><span>显示心声（内心独白、策略、情绪）</span><input type="checkbox" id="setInner"></label>
-        <label class="switch"><span>让扑通把话念出来</span><input type="checkbox" id="setTts"></label>
+        <label class="switch"><span>让初见把话念出来</span><input type="checkbox" id="setTts"></label>
         <p class="desc">朗读用的是浏览器自带的中文语音，音调调高了一些。</p></div>
-      <div class="card" id="pushCard"><h3>每日扑通提醒</h3><p class="desc" id="pushDesc"></p>
+      <div class="card" id="pushCard"><h3>每日初见提醒</h3><p class="desc" id="pushDesc"></p>
         <label class="switch"><span>到日子的挂念和每日问题，推给我</span><input type="checkbox" id="setPush"></label>
         <p class="desc small" id="pushState"></p></div>
-      <div class="card"><h3>时间机器</h3><p class="desc">快进时间，看扑通隔天怎么打招呼、怎么追问挂念的事、日记怎么一天天写。现在是 <b class="mono">${d.getMonth() + 1}/${d.getDate()} ${fmtTime(+d)}</b>${TIME_OFFSET ? '（模拟）' : ''}。</p>
+      <div class="card"><h3>时间机器</h3><p class="desc">快进时间，看初见隔天怎么打招呼、怎么追问挂念的事、日记怎么一天天写。现在是 <b class="mono">${d.getMonth() + 1}/${d.getDate()} ${fmtTime(+d)}</b>${TIME_OFFSET ? '（模拟）' : ''}。</p>
         <div class="toolbar"><button class="btn small" type="button" data-travel="1">快进 1 天</button><button class="btn small" type="button" data-travel="3">快进 3 天</button><button class="btn small" type="button" data-travel="0">回到现在</button></div></div>
       <div class="card"><h3>羁绊调试</h3><p class="desc">直接把心核调到某一级，看剧情解锁和语气变化。</p>
         <div class="toolbar">${LEVELS.map((x) => `<button class="btn small" type="button" data-lv="${x.lv}">Lv${x.lv}</button>`).join('')}</div></div>
@@ -2110,7 +2110,7 @@ function renderSettings() {
         <div class="toolbar"><button class="btn small" type="button" id="copyData">复制全部数据（JSON）</button><button class="btn small danger" type="button" id="resetAll">清空重来</button></div>
         <textarea id="copyFallback" class="soul-editor" style="min-height:120px" hidden aria-label="全部数据"></textarea></div>
     </div>
-    <p class="mono" style="color:var(--ink-3)">SOULMEET ${APP_VERSION} · AI 伙伴「扑通」 · 人设 ${esc(soulVersion(S))} · © 2026 南京畅快互娱信息技术有限公司</p>
+    <p class="mono" style="color:var(--ink-3)">SOULMEET ${APP_VERSION} · AI 伙伴「初见」 · 人设 ${esc(soulVersion(S))} · © 2026 南京畅快互娱信息技术有限公司</p>
   </section>`;
   $('#connDesc').textContent = LLM.kind === 'none' ? (window.claude ? '这个页面暂时用不了 Claude：请确认已登录 claude.ai，重新打开页面后在弹窗里允许它使用 Claude。' : '还没有连接模型。部署到 Netlify 并配置好密钥后会自动使用服务端模型；本地打开时可以在下面自填接口。') : `当前：${LLM.label}`;
   $('#tierField').hidden = LLM.kind !== 'claude';
@@ -2130,7 +2130,7 @@ function renderSettings() {
     $('#setPush').addEventListener('change', async (e) => {
       if (e.target.checked) {
         const r = await Push.enable();
-        if (r === 'on') { S.settings.push = true; save('core'); $('#pushState').textContent = '已订阅：挂念到期和每日问题会推到这台设备。'; toast('好，扑通会记得提醒你'); }
+        if (r === 'on') { S.settings.push = true; save('core'); $('#pushState').textContent = '已订阅：挂念到期和每日问题会推到这台设备。'; toast('好，初见会记得提醒你'); }
         else { e.target.checked = false; $('#pushState').textContent = r === 'denied' ? '通知权限被浏览器拦住了，去浏览器设置里允许后再试。' : r === 'no-push-service' ? '这个浏览器没有推送服务（内嵌窗口/webview 不支持）。用 Chrome 打开，或在手机上加到主屏幕再开。' : '订阅没有成功，稍后再试。'; }
       } else {
         S.settings.push = false; save('core'); await Push.disable();
@@ -2146,7 +2146,7 @@ function renderSettings() {
     if (!v.base || !v.key || !v.model) { toast('三项都要填'); return; }
     lsSet(BYOK_KEY, JSON.stringify(v));
     if (LLM.kind === 'none' || LLM.kind === 'byok') { await LLM.detect(); renderConn(); }
-    renderSettings(); toast('已保存，' + (LLM.kind === 'byok' ? '扑通现在用这个接口说话' : '当前仍优先使用' + LLM.label));
+    renderSettings(); toast('已保存，' + (LLM.kind === 'byok' ? '初见现在用这个接口说话' : '当前仍优先使用' + LLM.label));
   });
   $('#byClear').addEventListener('click', async () => { lsDel(BYOK_KEY); await LLM.detect(); renderConn(); renderSettings(); toast('已清除自填接口'); });
   $('#codeCard').hidden = LLM.kind !== 'proxy';
@@ -2162,7 +2162,7 @@ function renderSettings() {
   $('#resetAll').addEventListener('click', (e) => arm(e.currentTarget, '确定清空？所有记忆都会消失', resetAll));
 }
 async function timeTravel(days) {
-  if (busy) { toast('等扑通说完这句'); return; }
+  if (busy) { toast('等初见说完这句'); return; }
   TIME_OFFSET = days ? TIME_OFFSET + days * 864e5 : 0;
   S.settings.timeOffset = TIME_OFFSET; save('core');
   updateStage(); renderStatus(); renderChat(); renderChips();
@@ -2212,7 +2212,7 @@ function bindUI() {
   input.addEventListener('blur', () => Avatar.listen(false));
   $('#composer').addEventListener('submit', (e) => { e.preventDefault(); submit(); });
   $('#stopBtn').addEventListener('click', () => { if (ctl) ctl.abort(); });
-  /* 轻点戳一戳，长按听心跳（节奏跟扑通此刻的激动程度走） */
+  /* 轻点戳一戳，长按听心跳（节奏跟初见此刻的激动程度走） */
   const alienBtn = $('#alienBtn');
   let pressT = 0, heartMode = false, heartTimer = 0;
   const cancelHeart = () => { clearTimeout(heartTimer); heartTimer = 0; };
@@ -2272,7 +2272,7 @@ function bindUI() {
   $('#innerToggle').addEventListener('click', () => { S.settings.inner = !S.settings.inner; save('core'); renderToggles(); renderChat(); });
   $('#ttsToggle').addEventListener('click', () => {
     S.settings.tts = !S.settings.tts; save('core'); renderToggles();
-    if (S.settings.tts) { if ('speechSynthesis' in window) { speak('收到收到'); toast('扑通会把话念出来'); } else toast('这个浏览器不支持朗读'); }
+    if (S.settings.tts) { if ('speechSynthesis' in window) { speak('收到收到'); toast('初见会把话念出来'); } else toast('这个浏览器不支持朗读'); }
     else if ('speechSynthesis' in window) speechSynthesis.cancel();
   });
   const cv = $('#memSky');

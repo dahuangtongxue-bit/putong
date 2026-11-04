@@ -4,10 +4,10 @@ import { getStore } from '@netlify/blobs';
 import { subKey, sendTo, vapidReady, lazyWebPush } from './_push-lib.js';
 
 const DAILY_LINES = [
-  '扑通在窗台捡到一个新问题，回来看看？',
-  '扑通今天数了 17 只鸟，有 3 只好像是同一只。想讲给你听。',
-  '扑通给今天的云取了名字。回来问问它叫什么。',
-  '扑通把今天的声音收进了瓶子。回来看看是哪一段。',
+  '初见在窗台捡到一个新问题，回来看看？',
+  '初见今天数了 17 只鸟，有 3 只好像是同一只。想讲给你听。',
+  '初见给今天的云取了名字。回来问问它叫什么。',
+  '初见把今天的声音收进了瓶子。回来看看是哪一段。',
   '窗台的灯给你留着呢。回来聊两句～',
 ];
 
@@ -29,7 +29,7 @@ export default async () => {
     const due = (rec.followups || []).filter((f) => f.due && f.due <= today && !sentSet.has(f.id));
     const first = due[0];
     const body = first ? (first.ask || first.text + '——后来怎么样啦？') : dailyBody;
-    const r = await sendTo(rec, { title: 'SOULMEET', body, tag: first ? 'f-' + first.id : 'daily-' + today }, wp);
+    const r = await sendTo(rec, { title: '初见 SOULMEET', body, tag: first ? 'f-' + first.id : 'daily-' + today }, wp);
     if (r === 'gone') { await s.delete(b.key).catch(() => {}); pruned++; continue; }
     if (r === true) {
       sent++;

@@ -35,8 +35,8 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', (e) => {
   let d = {};
   try { d = e.data ? e.data.json() : {}; } catch { /* ignore */ }
-  e.waitUntil(self.registration.showNotification(d.title || 'SOULMEET', {
-    body: d.body || '扑通在窗台等你。',
+  e.waitUntil(self.registration.showNotification(d.title || '初见 SOULMEET', {
+    body: d.body || '初见在窗台等你。',
     icon: '/icon.svg',
     badge: '/icon-mask.svg',
     tag: d.tag || 'putong',
