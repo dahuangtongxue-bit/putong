@@ -13,7 +13,7 @@ for k, v in parts.items():
     page = page.replace('/*__' + k + '__*/', v)
 head = ('<!doctype html><html lang="zh-CN"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">'
-        '<meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信，把每天的心情写成日记与成长故事。">'
+        '<meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信与实时语音通话，把每天的心情写成日记与成长故事。">'
         '<meta name="author" content="南京畅快互娱信息技术有限公司">'
         '<meta name="theme-color" content="#86b3df">'
         '<link rel="manifest" href="/manifest.webmanifest">'

@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信，把每天的心情写成日记与成长故事。"><meta name="author" content="南京畅快互娱信息技术有限公司"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>SOULMEET · 在线聊天 · 实时语音文字通信 · AI 灵魂陪伴</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信与实时语音通话，把每天的心情写成日记与成长故事。"><meta name="author" content="南京畅快互娱信息技术有限公司"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>SOULMEET · 在线聊天 · 实时语音文字通信与语音通话 · AI 灵魂陪伴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -780,6 +780,54 @@ details.raw pre, .pre {
   .landing-card { padding: 26px 20px 18px; }
 }
 
+/* ---------- SOULMEET 实时语音通话 ---------- */
+.call {
+  position: fixed; inset: 0; z-index: 58;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: max(28px, env(safe-area-inset-top, 0px) + 24px) 24px 34px;
+  background: linear-gradient(180deg, #10162e 0%, #1d2440 55%, #273063 100%);
+  color: #fff;
+}
+.call[hidden] { display: none; }
+.call-top { width: 100%; text-align: center; }
+.call-time { font: 15px var(--font-mono); letter-spacing: .12em; color: rgba(255, 255, 255, .78); font-variant-numeric: tabular-nums; }
+.call-stage { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.call-orb {
+  position: relative; width: 172px; height: 172px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.call-core {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff 0%, var(--mood) 46%, var(--mood-deep) 100%);
+  box-shadow: 0 0 70px -10px var(--mood);
+  transition: transform .3s ease;
+}
+.call-orb .ring { position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--mood); opacity: 0; }
+.call-orb.listening .ring { animation: hring 1.5s ease-out infinite; }
+.call-orb.listening .ring.r2 { animation-delay: .75s; }
+.call-orb.speaking .call-core { animation: callpulse .85s ease-in-out infinite; }
+@keyframes callpulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+.call-face { position: relative; width: 62%; height: auto; }
+.call-name { font: 21px/1 var(--font-display); letter-spacing: .04em; }
+.call-status { font-size: 13.5px; color: rgba(255, 255, 255, .72); min-height: 20px; }
+.call-heard { max-width: 340px; text-align: center; font-size: 12.5px; line-height: 1.7; color: rgba(255, 255, 255, .55); min-height: 20px; overflow-wrap: anywhere; }
+.call-ctrls { display: flex; gap: 30px; align-items: center; }
+.call-btn {
+  width: 58px; height: 58px; border-radius: 50%; border: 0;
+  background: rgba(255, 255, 255, .16); color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s ease;
+}
+.call-btn:hover { background: rgba(255, 255, 255, .26); }
+.call-btn[aria-pressed="true"] { background: rgba(255, 255, 255, .38); }
+.call-btn.end { width: 68px; height: 68px; background: #e5484d; }
+.call-btn.end:hover { background: #f25a5f; }
+.call-tip { font-size: 12px; color: rgba(255, 255, 255, .45); text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+  .call-orb .ring, .call-orb.speaking .call-core { animation: none !important; }
+}
+
 </style>
 
 <div class="app" id="app">
@@ -830,6 +878,7 @@ details.raw pre, .pre {
         <div class="toggles">
           <button class="toggle" id="innerToggle" type="button" aria-pressed="false" title="显示扑通每一轮的内心独白、策略和情绪">心声</button>
           <button class="toggle" id="ttsToggle" type="button" aria-pressed="false" title="让扑通把话念出来">语音</button>
+          <button class="toggle" id="callToggle" type="button" title="和扑通实时语音通话">通话</button>
         </div>
       </header>
       <div class="log" id="log" aria-live="polite"></div>
@@ -897,6 +946,29 @@ details.raw pre, .pre {
     <p class="knock-err" id="knockErr" hidden></p>
   </div>
 </div>
+<!-- SOULMEET 实时语音通话（与扑通通话） -->
+<section class="call" id="callPanel" hidden role="dialog" aria-modal="true" aria-label="与扑通实时语音通话">
+  <div class="call-top"><span class="call-time" id="callTime">00:00</span></div>
+  <div class="call-stage">
+    <div class="call-orb" id="callOrb" role="button" tabindex="0" aria-label="点一下打断扑通">
+      <span class="ring r1"></span><span class="ring r2"></span>
+      <span class="call-core"></span>
+      <svg class="call-face" viewBox="0 0 200 200" aria-hidden="true"><ellipse cx="82" cy="100" rx="9" ry="12" fill="#1d2a40"/><circle cx="84.6" cy="96" r="2.6" fill="#fff"/><ellipse cx="118" cy="100" rx="9" ry="12" fill="#1d2a40"/><circle cx="120.6" cy="96" r="2.6" fill="#fff"/><path d="M91 124 Q100 132 109 124" fill="none" stroke="#1d2a40" stroke-width="4" stroke-linecap="round"/></svg>
+    </div>
+    <div class="call-name">扑通 · SOULMEET</div>
+    <div class="call-status" id="callStatus">正在接通…</div>
+    <div class="call-heard" id="callHeard" hidden></div>
+  </div>
+  <div class="call-ctrls">
+    <button class="call-btn" id="callMute" type="button" aria-label="静音" aria-pressed="false">
+      <svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1.5" width="4" height="8" rx="2" fill="currentColor"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5M5.5 14.5h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <button class="call-btn end" id="callEnd" type="button" aria-label="挂断">
+      <svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.8 10.2 C4.5 7.6 11.5 7.6 14.2 10.2 L12.6 12 L10 11 L10 9.4 C8.7 9 7.3 9 6 9.4 L6 11 L3.4 12 Z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <p class="call-tip">说完停一秒自动发送 · 点一下扑通可以打断它</p>
+</section>
 <!-- SOULMEET 品牌落地页：无需访问码即可查看（商标使用页 · 品牌与服务说明） -->
 <section class="landing" id="landing" aria-label="SOULMEET 服务首页">
   <div class="landing-card">
@@ -904,9 +976,10 @@ details.raw pre, .pre {
     <p class="brand-tag">灵魂在此相遇 —— 有记忆、会成长的 AI 灵魂陪伴服务</p>
     <div class="landing-desc">
       <h2>服务说明</h2>
-      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「扑通」：它会和你实时文字聊天、实时语音互动，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
+      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信、实时语音通话与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「扑通」：它会和你实时文字聊天、随时打一通语音电话，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
       <ul class="landing-feats">
         <li><b>实时文字通信</b><span>随时随地在线聊天，像和好朋友发消息一样一条条说</span></li>
+        <li><b>实时语音通话</b><span>像打电话一样呼叫扑通，说完停一秒它就接话，随时挂断</span></li>
         <li><b>实时语音互动</b><span>按住说话、语音朗读，文字与语音实时互转</span></li>
         <li><b>有记忆的陪伴</b><span>它记得你的事、挂念着你的日子，越聊越懂你</span></li>
         <li><b>心情日记与成长</b><span>每天一页观察日记，心核随羁绊成长，解锁专属故事</span></li>
@@ -1622,6 +1695,104 @@ function llmErrorText(e) {
   return map[c] || '信号断了一下。再发一次试试？';
 }
 
+/* SOULMEET 实时语音通话：连续听 → 停顿自动发送 → 扑通语音回复 → 说完继续听（可打断/静音/挂断） */
+const Call = {
+  active: false, muted: false, rec: null, wantListen: false, finals: [], silence: 0, _poll: 0, timer: 0, t0: 0, waiting: false,
+  get supported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
+  ui(id) { return document.getElementById(id); },
+  setState(text, mode) {
+    const s = this.ui('callStatus'); if (s) s.textContent = text;
+    const orb = this.ui('callOrb');
+    if (orb) { orb.classList.toggle('listening', mode === 'listen'); orb.classList.toggle('speaking', mode === 'speak'); }
+  },
+  start() {
+    if (this.active || !this.supported) return;
+    this.active = true; this.muted = false; this.wantListen = false; this.finals = []; this.waiting = false; this.t0 = Date.now();
+    const p = this.ui('callPanel'); if (p) p.hidden = false;
+    this.ui('callMute').setAttribute('aria-pressed', 'false');
+    const heard = this.ui('callHeard'); if (heard) heard.hidden = true;
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    this.timer = setInterval(() => {
+      const s = Math.floor((Date.now() - this.t0) / 1000);
+      const el = this.ui('callTime'); if (el) el.textContent = `${pad2(Math.floor(s / 60))}:${pad2(s % 60)}`;
+    }, 500);
+    this.listen();
+  },
+  listen() {
+    if (!this.active || this.muted) return;
+    if (busy) { this.setState('等扑通说完这句…', 'think'); setTimeout(() => { if (this.active && !this.muted && !this.waiting) this.listen(); }, 700); return; }
+    this.wantListen = true;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const r = new SR();
+    r.lang = 'zh-CN'; r.continuous = true; r.interimResults = true;
+    this.rec = r; this.finals = [];
+    r.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) this.finals.push(t.trim()); else interim += t;
+      }
+      const text = (this.finals.join('') + interim).trim();
+      const heard = this.ui('callHeard');
+      if (heard) { heard.hidden = !text; heard.textContent = text ? '听到：' + text.slice(0, 70) : ''; }
+      clearTimeout(this.silence);
+      if (text) this.silence = setTimeout(() => this.commit(), 1100);
+    };
+    r.onerror = (e) => {
+      if (e && (e.error === 'not-allowed' || e.error === 'service-not-allowed')) { this.stop(); toast('麦克风被拦住了，去浏览器设置里允许后才能通话'); }
+    };
+    r.onend = () => {
+      this.rec = null;
+      if (this.wantListen && this.active && !this.muted && !busy && !this.waiting) { try { r.start(); } catch { /* ignore */ } }
+    };
+    this.setState('我在听，你说…', 'listen');
+    try { r.start(); } catch { /* ignore */ }
+  },
+  commit() {
+    const text = this.finals.join(' ').replace(/\s+/g, ' ').trim();
+    this.finals = [];
+    const heard = this.ui('callHeard'); if (heard) heard.hidden = true;
+    if (!text) return;
+    this.wantListen = false;
+    if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+    this.waiting = true;
+    this.setState('扑通在想…', 'think');
+    sendOrQueue(text);
+    this.pollReply();
+  },
+  pollReply() {
+    clearTimeout(this._poll);
+    this._poll = setTimeout(() => {
+      if (!this.active) return;
+      const talking = window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending);
+      if (busy || talking) { this.setState(talking ? '扑通在说…' : '扑通在想…', talking ? 'speak' : 'think'); this.pollReply(); return; }
+      this.waiting = false;
+      this.listen();
+    }, 450);
+  },
+  interrupt() {
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    if (this.waiting && !busy) { this.waiting = false; this.listen(); }
+  },
+  toggleMute() {
+    this.muted = !this.muted;
+    this.ui('callMute').setAttribute('aria-pressed', String(this.muted));
+    if (this.muted) {
+      this.wantListen = false;
+      if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+      clearTimeout(this.silence);
+      this.setState('已静音，点话筒继续', '');
+    } else this.listen();
+  },
+  stop() {
+    this.active = false; this.wantListen = false; this.waiting = false;
+    clearTimeout(this.silence); clearTimeout(this._poll); clearInterval(this.timer);
+    if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    const p = this.ui('callPanel'); if (p) p.hidden = true;
+  },
+};
+
 /* SOULMEET 落地页：每次新会话先看品牌与服务说明（公开可见，无需访问码），点「进入」才进入服务 */
 const Landing = {
   gate() {
@@ -2325,7 +2496,7 @@ function renderChips() {
   if (userToday >= 4 && !S.diary.some((d) => d.date === today)) add('让扑通写今天的日记', () => { switchTab('diary'); writeDiary(); }, true);
 }
 function speak(text) {
-  if (!S.settings.tts || !('speechSynthesis' in window)) return;
+  if ((!S.settings.tts && !Call.active) || !('speechSynthesis' in window)) return;
   try {
     const u = new SpeechSynthesisUtterance(String(text).replace(/[～~（）()「」]/g, ' '));
     u.lang = 'zh-CN'; u.pitch = 1.7; u.rate = 1.06;
@@ -3402,6 +3573,14 @@ function bindUI() {
     micBtn.addEventListener('pointerleave', micEnd);
     micBtn.addEventListener('pointercancel', micEnd);
   }
+  /* SOULMEET 实时语音通话 */
+  const callToggle = $('#callToggle');
+  if (!Call.supported) callToggle.hidden = true;
+  else callToggle.addEventListener('click', () => Call.start());
+  $('#callEnd').addEventListener('click', () => Call.stop());
+  $('#callMute').addEventListener('click', () => Call.toggleMute());
+  $('#callOrb').addEventListener('click', () => Call.interrupt());
+  $('#callOrb').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); Call.interrupt(); } });
   $('#innerToggle').addEventListener('click', () => { S.settings.inner = !S.settings.inner; save('core'); renderToggles(); renderChat(); });
   $('#ttsToggle').addEventListener('click', () => {
     S.settings.tts = !S.settings.tts; save('core'); renderToggles();

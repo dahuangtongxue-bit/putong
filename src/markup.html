@@ -1,4 +1,4 @@
-<title>SOULMEET · 在线聊天 · 实时语音文字通信 · AI 灵魂陪伴</title>
+<title>SOULMEET · 在线聊天 · 实时语音文字通信与语音通话 · AI 灵魂陪伴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -54,6 +54,7 @@
         <div class="toggles">
           <button class="toggle" id="innerToggle" type="button" aria-pressed="false" title="显示扑通每一轮的内心独白、策略和情绪">心声</button>
           <button class="toggle" id="ttsToggle" type="button" aria-pressed="false" title="让扑通把话念出来">语音</button>
+          <button class="toggle" id="callToggle" type="button" title="和扑通实时语音通话">通话</button>
         </div>
       </header>
       <div class="log" id="log" aria-live="polite"></div>
@@ -121,6 +122,29 @@
     <p class="knock-err" id="knockErr" hidden></p>
   </div>
 </div>
+<!-- SOULMEET 实时语音通话（与扑通通话） -->
+<section class="call" id="callPanel" hidden role="dialog" aria-modal="true" aria-label="与扑通实时语音通话">
+  <div class="call-top"><span class="call-time" id="callTime">00:00</span></div>
+  <div class="call-stage">
+    <div class="call-orb" id="callOrb" role="button" tabindex="0" aria-label="点一下打断扑通">
+      <span class="ring r1"></span><span class="ring r2"></span>
+      <span class="call-core"></span>
+      <svg class="call-face" viewBox="0 0 200 200" aria-hidden="true"><ellipse cx="82" cy="100" rx="9" ry="12" fill="#1d2a40"/><circle cx="84.6" cy="96" r="2.6" fill="#fff"/><ellipse cx="118" cy="100" rx="9" ry="12" fill="#1d2a40"/><circle cx="120.6" cy="96" r="2.6" fill="#fff"/><path d="M91 124 Q100 132 109 124" fill="none" stroke="#1d2a40" stroke-width="4" stroke-linecap="round"/></svg>
+    </div>
+    <div class="call-name">扑通 · SOULMEET</div>
+    <div class="call-status" id="callStatus">正在接通…</div>
+    <div class="call-heard" id="callHeard" hidden></div>
+  </div>
+  <div class="call-ctrls">
+    <button class="call-btn" id="callMute" type="button" aria-label="静音" aria-pressed="false">
+      <svg width="22" height="22" viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1.5" width="4" height="8" rx="2" fill="currentColor"/><path d="M3.5 7.5a4.5 4.5 0 0 0 9 0M8 12v2.5M5.5 14.5h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <button class="call-btn end" id="callEnd" type="button" aria-label="挂断">
+      <svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M1.8 10.2 C4.5 7.6 11.5 7.6 14.2 10.2 L12.6 12 L10 11 L10 9.4 C8.7 9 7.3 9 6 9.4 L6 11 L3.4 12 Z" fill="currentColor"/></svg>
+    </button>
+  </div>
+  <p class="call-tip">说完停一秒自动发送 · 点一下扑通可以打断它</p>
+</section>
 <!-- SOULMEET 品牌落地页：无需访问码即可查看（商标使用页 · 品牌与服务说明） -->
 <section class="landing" id="landing" aria-label="SOULMEET 服务首页">
   <div class="landing-card">
@@ -128,9 +152,10 @@
     <p class="brand-tag">灵魂在此相遇 —— 有记忆、会成长的 AI 灵魂陪伴服务</p>
     <div class="landing-desc">
       <h2>服务说明</h2>
-      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「扑通」：它会和你实时文字聊天、实时语音互动，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
+      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信、实时语音通话与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「扑通」：它会和你实时文字聊天、随时打一通语音电话，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
       <ul class="landing-feats">
         <li><b>实时文字通信</b><span>随时随地在线聊天，像和好朋友发消息一样一条条说</span></li>
+        <li><b>实时语音通话</b><span>像打电话一样呼叫扑通，说完停一秒它就接话，随时挂断</span></li>
         <li><b>实时语音互动</b><span>按住说话、语音朗读，文字与语音实时互转</span></li>
         <li><b>有记忆的陪伴</b><span>它记得你的事、挂念着你的日子，越聊越懂你</span></li>
         <li><b>心情日记与成长</b><span>每天一页观察日记，心核随羁绊成长，解锁专属故事</span></li>

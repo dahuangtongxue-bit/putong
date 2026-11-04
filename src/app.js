@@ -383,6 +383,104 @@ function llmErrorText(e) {
   return map[c] || '信号断了一下。再发一次试试？';
 }
 
+/* SOULMEET 实时语音通话：连续听 → 停顿自动发送 → 扑通语音回复 → 说完继续听（可打断/静音/挂断） */
+const Call = {
+  active: false, muted: false, rec: null, wantListen: false, finals: [], silence: 0, _poll: 0, timer: 0, t0: 0, waiting: false,
+  get supported() { return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
+  ui(id) { return document.getElementById(id); },
+  setState(text, mode) {
+    const s = this.ui('callStatus'); if (s) s.textContent = text;
+    const orb = this.ui('callOrb');
+    if (orb) { orb.classList.toggle('listening', mode === 'listen'); orb.classList.toggle('speaking', mode === 'speak'); }
+  },
+  start() {
+    if (this.active || !this.supported) return;
+    this.active = true; this.muted = false; this.wantListen = false; this.finals = []; this.waiting = false; this.t0 = Date.now();
+    const p = this.ui('callPanel'); if (p) p.hidden = false;
+    this.ui('callMute').setAttribute('aria-pressed', 'false');
+    const heard = this.ui('callHeard'); if (heard) heard.hidden = true;
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    this.timer = setInterval(() => {
+      const s = Math.floor((Date.now() - this.t0) / 1000);
+      const el = this.ui('callTime'); if (el) el.textContent = `${pad2(Math.floor(s / 60))}:${pad2(s % 60)}`;
+    }, 500);
+    this.listen();
+  },
+  listen() {
+    if (!this.active || this.muted) return;
+    if (busy) { this.setState('等扑通说完这句…', 'think'); setTimeout(() => { if (this.active && !this.muted && !this.waiting) this.listen(); }, 700); return; }
+    this.wantListen = true;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const r = new SR();
+    r.lang = 'zh-CN'; r.continuous = true; r.interimResults = true;
+    this.rec = r; this.finals = [];
+    r.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) this.finals.push(t.trim()); else interim += t;
+      }
+      const text = (this.finals.join('') + interim).trim();
+      const heard = this.ui('callHeard');
+      if (heard) { heard.hidden = !text; heard.textContent = text ? '听到：' + text.slice(0, 70) : ''; }
+      clearTimeout(this.silence);
+      if (text) this.silence = setTimeout(() => this.commit(), 1100);
+    };
+    r.onerror = (e) => {
+      if (e && (e.error === 'not-allowed' || e.error === 'service-not-allowed')) { this.stop(); toast('麦克风被拦住了，去浏览器设置里允许后才能通话'); }
+    };
+    r.onend = () => {
+      this.rec = null;
+      if (this.wantListen && this.active && !this.muted && !busy && !this.waiting) { try { r.start(); } catch { /* ignore */ } }
+    };
+    this.setState('我在听，你说…', 'listen');
+    try { r.start(); } catch { /* ignore */ }
+  },
+  commit() {
+    const text = this.finals.join(' ').replace(/\s+/g, ' ').trim();
+    this.finals = [];
+    const heard = this.ui('callHeard'); if (heard) heard.hidden = true;
+    if (!text) return;
+    this.wantListen = false;
+    if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+    this.waiting = true;
+    this.setState('扑通在想…', 'think');
+    sendOrQueue(text);
+    this.pollReply();
+  },
+  pollReply() {
+    clearTimeout(this._poll);
+    this._poll = setTimeout(() => {
+      if (!this.active) return;
+      const talking = window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending);
+      if (busy || talking) { this.setState(talking ? '扑通在说…' : '扑通在想…', talking ? 'speak' : 'think'); this.pollReply(); return; }
+      this.waiting = false;
+      this.listen();
+    }, 450);
+  },
+  interrupt() {
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    if (this.waiting && !busy) { this.waiting = false; this.listen(); }
+  },
+  toggleMute() {
+    this.muted = !this.muted;
+    this.ui('callMute').setAttribute('aria-pressed', String(this.muted));
+    if (this.muted) {
+      this.wantListen = false;
+      if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+      clearTimeout(this.silence);
+      this.setState('已静音，点话筒继续', '');
+    } else this.listen();
+  },
+  stop() {
+    this.active = false; this.wantListen = false; this.waiting = false;
+    clearTimeout(this.silence); clearTimeout(this._poll); clearInterval(this.timer);
+    if (this.rec) { try { this.rec.stop(); } catch { /* ignore */ } this.rec = null; }
+    if (window.speechSynthesis) speechSynthesis.cancel();
+    const p = this.ui('callPanel'); if (p) p.hidden = true;
+  },
+};
+
 /* SOULMEET 落地页：每次新会话先看品牌与服务说明（公开可见，无需访问码），点「进入」才进入服务 */
 const Landing = {
   gate() {
@@ -1086,7 +1184,7 @@ function renderChips() {
   if (userToday >= 4 && !S.diary.some((d) => d.date === today)) add('让扑通写今天的日记', () => { switchTab('diary'); writeDiary(); }, true);
 }
 function speak(text) {
-  if (!S.settings.tts || !('speechSynthesis' in window)) return;
+  if ((!S.settings.tts && !Call.active) || !('speechSynthesis' in window)) return;
   try {
     const u = new SpeechSynthesisUtterance(String(text).replace(/[～~（）()「」]/g, ' '));
     u.lang = 'zh-CN'; u.pitch = 1.7; u.rate = 1.06;
@@ -2163,6 +2261,14 @@ function bindUI() {
     micBtn.addEventListener('pointerleave', micEnd);
     micBtn.addEventListener('pointercancel', micEnd);
   }
+  /* SOULMEET 实时语音通话 */
+  const callToggle = $('#callToggle');
+  if (!Call.supported) callToggle.hidden = true;
+  else callToggle.addEventListener('click', () => Call.start());
+  $('#callEnd').addEventListener('click', () => Call.stop());
+  $('#callMute').addEventListener('click', () => Call.toggleMute());
+  $('#callOrb').addEventListener('click', () => Call.interrupt());
+  $('#callOrb').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); Call.interrupt(); } });
   $('#innerToggle').addEventListener('click', () => { S.settings.inner = !S.settings.inner; save('core'); renderToggles(); renderChat(); });
   $('#ttsToggle').addEventListener('click', () => {
     S.settings.tts = !S.settings.tts; save('core'); renderToggles();
