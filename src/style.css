@@ -290,8 +290,7 @@ p { margin: 0; }
 /* ---------- 状态 ---------- */
 .status { display: flex; flex-direction: column; gap: 10px; padding-inline: 4px; }
 .name-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.name { font: 34px/1 var(--font-display); letter-spacing: .1em; }
-.name .name-en { font-size: 13px; letter-spacing: .28em; color: var(--ink-3); font-weight: 400; }
+.name { font: 34px/1 var(--font-display); letter-spacing: .14em; }
 .mood-chip {
   display: inline-flex; align-items: center; gap: 7px;
   padding: 4px 11px 4px 8px; border-radius: 999px;
@@ -824,5 +823,5 @@ details.raw pre, .pre {
   .call-orb .ring, .call-orb.speaking .call-core { animation: none !important; }
 }
 
-/* ---------- 初见 SOULMEET 双语标识 ---------- */
-.brand-en { margin-top: 8px; font: 15px/1 var(--font-display); letter-spacing: .42em; text-indent: .42em; color: var(--ink-2); }
+/* ---------- SOULMEET 口号副行 ---------- */
+.brand-sub { margin-top: 8px; font-size: 12.5px; color: var(--ink-3); }
