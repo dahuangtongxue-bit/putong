@@ -999,6 +999,13 @@ function renderStatus() {
   Avatar.setLevel(L.lv);
   const chip = $('#moodChip b'); if (chip) chip.textContent = Avatar.mood;
 }
+/* TA 为它取的名字：应用到聊天头、输入框、通话页（没取过就显示服务名 SOULMEET） */
+function renderPetName() {
+  const n = S.meta.flags.petName;
+  const who = $('#chatWho'); if (who) who.textContent = n ? `和${n}聊天` : '和SOULMEET聊天';
+  const input = $('#input'); if (input) input.placeholder = n ? `和${n}说点什么…` : '和SOULMEET说点什么…';
+  const cn = $('#callName'); if (cn) cn.textContent = n || 'SOULMEET';
+}
 function renderConn() {
   const el = $('#connLine');
   if (LLM.kind === 'none') el.textContent = '还没连接模型 · 去「实验室 → 设置」';
@@ -1323,6 +1330,12 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
       if (!a.pendingChapter) { a.pendingChapter = early.lv; a.pendingTurns = 0; }
       pushChat({ role: 'note', kind: 'chapter-early', text: 'SOULMEET想起了它的外婆……它想找个时机，讲一个故事给你听。', at: nowMs() + 1 });
       markPanelsDirty();
+    }
+  }
+  for (const op of p.mem) {
+    if (op && op.op === 'bond' && /^TA 给我取名叫/.test(String(op.text || ''))) {
+      const n = String(op.text).replace(/^TA 给我取名叫/, '').replace(/[「」『』"'。！!？?，,\s]+/g, '').slice(0, 12);
+      if (n && n !== S.meta.flags.petName) { S.meta.flags.petName = n; renderPetName(); markPanelsDirty(); }
     }
   }
   maybeGiftSound(t, f);
@@ -2283,7 +2296,7 @@ function bindUI() {
 }
 function renderAll() {
   Avatar.setMood(S.alien.mood); Avatar.setArousal(S.alien.arousal);
-  updateStage(); renderStatus(); renderChat(); renderToggles(); renderChips(); renderConn();
+  updateStage(); renderStatus(); renderChat(); renderToggles(); renderChips(); renderConn(); renderPetName();
   markPanelsDirty(); if (currentTab !== 'chat') renderPanel(currentTab);
 }
 
@@ -2305,6 +2318,23 @@ async function boot() {
       else if (local && (local.chat.length || Object.keys(local.facts).length)) Store.mark();
     } catch (e) { console.warn('[putong] db load failed', e); Store.mode = 'local'; }
   }
+  /* 开场脚本升级：把老存档里的开场白就地换成最新版（保留时间与后续对话） */
+  const OB_VER = 3;
+  if ((S.meta.obVersion || 0) < OB_VER) {
+    const texts = ONBOARDING.map((x) => x.text);
+    const idx = [];
+    S.chat.forEach((m, i) => { if (m.kind === 'onboard') idx.push(i); });
+    idx.forEach((ci, k) => { if (k < texts.length) S.chat[ci].text = texts[k]; });
+    if (idx.length && idx.length < texts.length) {
+      const last = S.chat[idx[idx.length - 1]];
+      const extra = texts.slice(idx.length).map((t, k) => ({ id: rid('c'), role: 'putong', text: t, kind: 'onboard', c: (MOODS['好奇'] || {}).color, at: last.at + (k + 1) * 1500 }));
+      S.chat.splice(idx[idx.length - 1] + 1, 0, ...extra);
+      renderChat();
+    }
+    S.meta.obVersion = OB_VER;
+    save('chat', 'core');
+  }
+  renderPetName();
   renderConn(); renderStorageLine();
   /* 恢复的标签页（实验室/日记等）可能在模型检测完成前就渲染了，重渲染一次拿掉「未连接」 */
   if (currentTab !== 'chat') renderPanel(currentTab);

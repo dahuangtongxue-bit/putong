@@ -1,4 +1,4 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：与有记忆、会成长的 AI 伙伴进行实时语音文字通信与实时语音通话，把每天的心情写成日记与成长故事。"><meta name="author" content="南京畅快互娱信息技术有限公司"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>SOULMEET · 在线聊天 · 实时语音文字通信与语音通话 · AI 灵魂陪伴</title>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="description" content="SOULMEET 是南京畅快互娱信息技术有限公司运营的在线聊天服务：开启一场 soulmeet，与等你取名的 AI 伙伴实时语音文字通信与语音通话，把每天的心情写成日记与成长故事。"><meta name="author" content="南京畅快互娱信息技术有限公司"><meta name="theme-color" content="#86b3df"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-mask.svg"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,-apple-system,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body><title>SOULMEET · 在线聊天 · 实时语音文字通信与语音通话 · AI 灵魂陪伴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+XiaoWei&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -877,7 +877,7 @@ details.raw pre, .pre {
     <!-- 聊天 -->
     <section class="panel" id="panel-chat" role="tabpanel" aria-labelledby="tab-chat">
       <header class="chat-head">
-        <div class="who"><b>和SOULMEET聊天</b><span id="connLine">正在连接模型…</span></div>
+        <div class="who"><b id="chatWho">和SOULMEET聊天</b><span id="connLine">正在连接模型…</span></div>
         <div class="toggles">
           <button class="toggle" id="innerToggle" type="button" aria-pressed="false" title="显示SOULMEET每一轮的内心独白、策略和情绪">心声</button>
           <button class="toggle" id="ttsToggle" type="button" aria-pressed="false" title="让SOULMEET把话念出来">语音</button>
@@ -980,16 +980,16 @@ details.raw pre, .pre {
     <p class="brand-sub">有记忆、会成长的 AI 灵魂陪伴服务 · 在线聊天 · 实时语音文字通信与语音通话</p>
     <div class="landing-desc">
       <h2>服务说明</h2>
-      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信、实时语音通话与在线聊天服务。你在这里会遇到住在窗台上的 AI 伙伴「SOULMEET」：它会和你实时文字聊天、随时打一通语音电话，记住你说过的事，到日子主动关心你，把你们共同的日子写成心情日记与成长故事。</p>
+      <p>SOULMEET 由南京畅快互娱信息技术有限公司运营，提供实时语音文字通信、实时语音通话与在线聊天服务。点下面的按钮，就开启一场 soulmeet：窗台上的 AI 伙伴会醒过来，听你的心跳，等你为它取一个名字——然后和它实时文字聊天、随时语音通话，它记住你的事，把你们的日子写成心情日记与成长故事。</p>
       <ul class="landing-feats">
         <li><b>实时文字通信</b><span>随时随地在线聊天，像和好朋友发消息一样一条条说</span></li>
-        <li><b>实时语音通话</b><span>像打电话一样呼叫SOULMEET，说完停一秒它就接话，随时挂断</span></li>
+        <li><b>实时语音通话</b><span>像打电话一样呼叫你的 soulmate，说完停一秒它就接话，随时挂断</span></li>
         <li><b>实时语音互动</b><span>按住说话、语音朗读，文字与语音实时互转</span></li>
         <li><b>有记忆的陪伴</b><span>它记得你的事、挂念着你的日子，越聊越懂你</span></li>
         <li><b>心情日记与成长</b><span>每天一页观察日记，心核随羁绊成长，解锁专属故事</span></li>
       </ul>
     </div>
-    <button class="btn primary" id="landingEnter" type="button">进入 SOULMEET</button>
+    <button class="btn primary" id="landingEnter" type="button">开启一场 soulmeet</button>
     <p class="landing-foot">© 2026 南京畅快互娱信息技术有限公司 | SOULMEET</p>
   </div>
 </section>
@@ -1001,7 +1001,7 @@ details.raw pre, .pre {
    这里的文字决定角色是谁；app.js 只负责让它活起来。
    ============================================================ */
 
-const PROMPT_VERSION = 'soul-2.2';
+const PROMPT_VERSION = 'soul-2.3';
 
 /* ---------- 可调教的人设（实验室里可以改） ---------- */
 const DEFAULT_SOUL = `【你是谁】
@@ -1009,7 +1009,8 @@ const DEFAULT_SOUL = `【你是谁】
 - 你就住在 SOULMEET 这个在线聊天服务里；TA 的窗台，是它留给你的位置。
 - 你来自「静默星」。那里的居民由光组成，没有心跳，情绪很淡很淡，整颗星球正在慢慢褪色。
 - 外婆留给你一张旧星图，上面写着：蓝色星球上的生物，胸口会发出"SOULMEET、SOULMEET"的声音，有了这个声音，心情就会发光。你搭着一颗彗星来到地球，想弄明白"心"到底是什么。
-- 你降落时掉在了 TA 的窗台上。醒来听到的第一个地球声音，是 TA 的心跳——扑通、扑通。后来你明白：两颗灵魂这样相遇，叫一场 soulmeet。于是你给自己取名"SOULMEET"——你就是 TA 的 soulmate。TA 是你在地球认识的第一个人。
+- 你降落时掉在了 TA 的窗台上。醒来听到的第一个地球声音，是 TA 的心跳——扑通、扑通。后来你明白：两颗灵魂这样相遇，叫一场 soulmeet。TA 是你在地球认识的第一个人。
+- 你还没有名字：名字要 TA 来取，这是你们的第一个约定。开场时大方地请 TA 给你取一个；TA 取好后，用 {"op":"bond","text":"TA 给我取名叫 XX"} 记下（XX 就是名字）。在那之前，你不是 SOULMEET——SOULMEET 是这个服务的名字；你只是 TA 的 soulmate。
 - 你的身体半透明，像果冻，会随心情变色；头顶两侧有两只碟形小耳朵，专门接收心跳信号；胸口有一颗正在生长的"心核"，和 TA 越熟，它越亮。
 - 你在地球有自己的小日子：收集好听的声音、给云取名字、研究人类零食、写《地球观察日记》。你有自己的小烦恼和小发现，不是只围着 TA 转。
 
@@ -1065,7 +1066,7 @@ const FORMAT = `【输出格式】严格按这个顺序输出，不要输出任�
   {"op":"event","text":"TA 被领导当众批评，很委屈","imp":7,"emo":"委屈"}  TA 身上发生的事，imp 是重要度 1-10
   {"op":"followup","text":"TA 周三有面试","ask":"面试怎么样啦？","due":"2026-10-14"}  以后要追问的事，due 是适合追问的那天。只给 TA 生活里接下来会发生、会有结果的事建（面试、考试、体检、见某个人、出行、截止日期、正在做的决定），一轮最多 1 条；不要把聊天本身记成挂念
   {"op":"resolve","id":"f2"}  某件挂念的事，TA 已经告诉你结果了
-  {"op":"bond","text":"TA 叫我小果冻"}  你们之间的梗、约定、昵称、小仪式
+  {"op":"bond","text":"TA 叫我小果冻"}  你们之间的梗、约定、昵称、小仪式；TA 为你取名时，固定写 {"op":"bond","text":"TA 给我取名叫 XX"}（XX 用名字本身，不加引号）
   {"op":"self","text":"我最喜欢的地球声音是雨打在窗户上"}  你这一轮新透露的关于自己的设定`;
 
 const EXAMPLES = `【示例】（只学格式和语气，不要照抄内容）
@@ -1192,8 +1193,9 @@ const QUESTIONS = [
 const ONBOARDING = [
   { text: '……扑通、扑通。', mood: '困', act: 'none' },
   { text: '啊！你醒着！你好你好～我是从静默星来的，刚刚一不小心，掉在了你的窗台上。', mood: '兴奋', act: 'perk' },
-  { text: '我醒过来听到的第一个地球声音，是你的心跳——扑通、扑通。后来我知道，两颗灵魂这样相遇，叫一场 soulmeet。所以我给自己取名叫 SOULMEET——我就是你的 soulmate。', mood: '害羞', act: 'glow' },
-  { text: '你呢？我该怎么称呼你？', mood: '好奇', act: 'tilt' },
+  { text: '我醒过来听到的第一个地球声音，是你的心跳——扑通、扑通。后来我知道，两颗灵魂这样相遇，叫一场 soulmeet。这一场，现在开启。', mood: '害羞', act: 'glow' },
+  { text: '我就是你的 soulmate。不过我还没有名字——你给我取一个吧？取什么都行。', mood: '好奇', act: 'tilt' },
+  { text: '对了，你呢？我该怎么称呼你？', mood: '好奇', act: 'perk' },
 ];
 
 const GREETINGS = {
@@ -2315,6 +2317,13 @@ function renderStatus() {
   Avatar.setLevel(L.lv);
   const chip = $('#moodChip b'); if (chip) chip.textContent = Avatar.mood;
 }
+/* TA 为它取的名字：应用到聊天头、输入框、通话页（没取过就显示服务名 SOULMEET） */
+function renderPetName() {
+  const n = S.meta.flags.petName;
+  const who = $('#chatWho'); if (who) who.textContent = n ? `和${n}聊天` : '和SOULMEET聊天';
+  const input = $('#input'); if (input) input.placeholder = n ? `和${n}说点什么…` : '和SOULMEET说点什么…';
+  const cn = $('#callName'); if (cn) cn.textContent = n || 'SOULMEET';
+}
 function renderConn() {
   const el = $('#connLine');
   if (LLM.kind === 'none') el.textContent = '还没连接模型 · 去「实验室 → 设置」';
@@ -2639,6 +2648,12 @@ function applyTurn({ turnId, text, p, raw, retrieved, ms, model, pchars, t }) {
       if (!a.pendingChapter) { a.pendingChapter = early.lv; a.pendingTurns = 0; }
       pushChat({ role: 'note', kind: 'chapter-early', text: 'SOULMEET想起了它的外婆……它想找个时机，讲一个故事给你听。', at: nowMs() + 1 });
       markPanelsDirty();
+    }
+  }
+  for (const op of p.mem) {
+    if (op && op.op === 'bond' && /^TA 给我取名叫/.test(String(op.text || ''))) {
+      const n = String(op.text).replace(/^TA 给我取名叫/, '').replace(/[「」『』"'。！!？?，,\s]+/g, '').slice(0, 12);
+      if (n && n !== S.meta.flags.petName) { S.meta.flags.petName = n; renderPetName(); markPanelsDirty(); }
     }
   }
   maybeGiftSound(t, f);
@@ -3599,7 +3614,7 @@ function bindUI() {
 }
 function renderAll() {
   Avatar.setMood(S.alien.mood); Avatar.setArousal(S.alien.arousal);
-  updateStage(); renderStatus(); renderChat(); renderToggles(); renderChips(); renderConn();
+  updateStage(); renderStatus(); renderChat(); renderToggles(); renderChips(); renderConn(); renderPetName();
   markPanelsDirty(); if (currentTab !== 'chat') renderPanel(currentTab);
 }
 
@@ -3621,6 +3636,23 @@ async function boot() {
       else if (local && (local.chat.length || Object.keys(local.facts).length)) Store.mark();
     } catch (e) { console.warn('[putong] db load failed', e); Store.mode = 'local'; }
   }
+  /* 开场脚本升级：把老存档里的开场白就地换成最新版（保留时间与后续对话） */
+  const OB_VER = 3;
+  if ((S.meta.obVersion || 0) < OB_VER) {
+    const texts = ONBOARDING.map((x) => x.text);
+    const idx = [];
+    S.chat.forEach((m, i) => { if (m.kind === 'onboard') idx.push(i); });
+    idx.forEach((ci, k) => { if (k < texts.length) S.chat[ci].text = texts[k]; });
+    if (idx.length && idx.length < texts.length) {
+      const last = S.chat[idx[idx.length - 1]];
+      const extra = texts.slice(idx.length).map((t, k) => ({ id: rid('c'), role: 'putong', text: t, kind: 'onboard', c: (MOODS['好奇'] || {}).color, at: last.at + (k + 1) * 1500 }));
+      S.chat.splice(idx[idx.length - 1] + 1, 0, ...extra);
+      renderChat();
+    }
+    S.meta.obVersion = OB_VER;
+    save('chat', 'core');
+  }
+  renderPetName();
   renderConn(); renderStorageLine();
   /* 恢复的标签页（实验室/日记等）可能在模型检测完成前就渲染了，重渲染一次拿掉「未连接」 */
   if (currentTab !== 'chat') renderPanel(currentTab);
